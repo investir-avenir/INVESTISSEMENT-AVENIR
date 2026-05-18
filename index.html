@@ -3,234 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Investissement & Avenir | Private Banking</title>
+    <title>Investissement & Avenir</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root { --gold: #d4af37; --dark-bg: #0a0b0d; --card-bg: #161a1e; }
-        body { background-color: var(--dark-bg); color: #eaecef; font-family: 'Inter', sans-serif; }
-        .gold-gradient { background: linear-gradient(135deg, #d4af37 0%, #f7e08b 100%); color: #000; }
-        .card { background-color: var(--card-bg); border: 1px solid #2b3139; }
-        .visa-card { background: linear-gradient(135deg, #1a1a1a 0%, #333 100%); border: 1px solid #444; border-radius: 15px; position: relative; }
-        .visa-card::after { content: "VISA"; position: absolute; bottom: 20px; right: 20px; font-style: italic; font-weight: bold; font-size: 20px; color: #fff; opacity: 0.7; }
-        .animate-in { animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        body { background-color: #000; color: #fff; font-family: sans-serif; margin: 0; }
+        .gold-btn { background: linear-gradient(135deg, #d4af37 0%, #f1d592 100%); color: #000; font-weight: 800; }
+        .step-page { display: none; min-h-screen; flex-direction: column; padding: 24px; }
+        .step-page.active { display: flex; }
+        input { background: #111!important; border: 1px solid #333!important; color: white!important; border-radius: 16px!important; padding: 18px!important; width: 100%; margin-bottom: 16px; outline: none; }
+        .nav-bottom { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; color: #888; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #eee; }
     </style>
 </head>
-<body class="min-h-screen">
+<body>
 
-<nav class="border-b border-gray-800 p-4 flex justify-between items-center bg-[#161a1e]/90 sticky top-0 z-50">
-    <div class="flex items-center gap-3">
-        <div class="w-10 h-10 gold-gradient rounded flex items-center justify-center">
-            <i class="fa-solid fa-crown text-xl"></i>
+<div id="app">
+    <div id="page-welcome" class="step-page active items-center justify-center text-center">
+        <div class="w-20 h-20 gold-btn rounded-3xl flex items-center justify-center mb-6 shadow-2xl">
+            <i class="fa-solid fa-shield-halved text-3xl"></i>
         </div>
-        <span class="text-xl font-black uppercase tracking-tighter">Investissement <span class="text-gold">&</span> Avenir</span>
-    </div>
-    <div id="nav-user" class="hidden flex items-center gap-6">
-        <div class="text-right">
-            <p id="user-display-name" class="text-sm font-black text-white"></p>
-            <p class="text-[9px] text-gold font-bold uppercase">Membre Privilège</p>
-        </div>
-        <button onclick="logout()" class="text-red-500 text-xs font-bold hover:underline">Quitter</button>
-    </div>
-</nav>
-
-<div class="container mx-auto px-4 py-8">
-    
-    <div id="home-choice" class="max-w-md mx-auto mt-20 text-center animate-in">
-        <h1 class="text-3xl font-black mb-8 italic">BIENVENUE CHEZ <br><span class="text-gold italic">INVESTISSEMENT & AVENIR</span></h1>
-        <div class="space-y-4">
-            <button onclick="showAuth('inscription')" class="w-full gold-gradient py-5 rounded-2xl font-black uppercase tracking-widest shadow-xl">S'inscrire (Nouveau client)</button>
-            <button onclick="showAuth('connexion')" class="w-full bg-gray-800 border border-gray-600 py-5 rounded-2xl font-black uppercase tracking-widest">Se connecter (Déjà client)</button>
-        </div>
+        <h1 class="text-2xl font-black uppercase tracking-widest mb-10">Investissement <br><span class="text-yellow-500">&</span> Avenir</h1>
+        <button onclick="goTo('page-auth')" class="gold-btn w-full max-w-xs py-5 rounded-2xl mb-4 uppercase">Créer un compte</button>
+        <button onclick="goTo('page-login')" class="w-full max-w-xs py-5 rounded-2xl border border-white/20 uppercase font-bold text-sm">Se connecter</button>
     </div>
 
-    <div id="auth-box" class="max-w-xl mx-auto mt-6 p-8 card rounded-3xl shadow-2xl hidden animate-in">
+    <div id="page-auth" class="step-page">
+        <button onclick="goTo('page-welcome')" class="mb-8 text-gray-500 text-sm font-bold"><i class="fa-solid fa-arrow-left mr-2"></i> RETOUR</button>
+        <h2 class="text-2xl font-black mb-2">Identifiants</h2>
+        <p class="text-gray-500 text-sm mb-8 italic">Étape 1 sur 2 : Sécurité du compte</p>
         
-        <div id="login-form" class="hidden">
-            <h2 class="text-2xl font-black mb-6 uppercase italic text-gold">Connexion client</h2>
-            <div class="space-y-4">
-                <input type="email" id="login-email" placeholder="Votre adresse mail" class="w-full bg-black/40 border border-gray-700 p-4 rounded-xl outline-none focus:border-gold">
-                <input type="password" id="login-pass" placeholder="Votre mot de passe" class="w-full bg-black/40 border border-gray-700 p-4 rounded-xl outline-none focus:border-gold">
-                <button onclick="processLogin()" class="w-full gold-gradient py-4 rounded-xl font-black uppercase italic">Accéder à mon tableau de bord</button>
-                <button onclick="location.reload()" class="w-full text-gray-500 text-xs mt-2">Retour</button>
-            </div>
-        </div>
-
-        <div id="signup-form" class="hidden">
-            <div id="step-1">
-                <h2 class="text-2xl font-black mb-6 uppercase italic border-b border-gray-800 pb-4 text-gold">Nouveau Compte</h2>
-                <input type="email" id="reg-email" placeholder="Adresse e-mail" class="w-full bg-black/40 border border-gray-700 p-4 rounded-xl mb-4 outline-none focus:border-gold">
-                <input type="password" id="reg-pass" placeholder="Mot de passe" class="w-full bg-black/40 border border-gray-700 p-4 rounded-xl mb-6 outline-none focus:border-gold">
-                <button onclick="goToStep(2)" class="w-full gold-gradient py-4 rounded-xl font-black uppercase">Suivant <i class="fa-solid fa-arrow-right"></i></button>
-            </div>
-            <div id="step-2" class="hidden">
-                <h2 class="text-xl font-black mb-6 uppercase italic text-gold">Identité</h2>
-                <div class="grid grid-cols-2 gap-4">
-                    <input type="text" id="nom" placeholder="Nom" class="bg-black/40 border border-gray-700 p-4 rounded-xl">
-                    <input type="text" id="prenom" placeholder="Prénom" class="bg-black/40 border border-gray-700 p-4 rounded-xl">
-                    <input type="date" id="dob" class="bg-black/40 border border-gray-700 p-4 rounded-xl text-gray-400">
-                    <input type="text" id="ville" placeholder="Ville de naissance" class="bg-black/40 border border-gray-700 p-4 rounded-xl">
-                </div>
-                <button onclick="finalizeRegistration()" class="w-full gold-gradient py-4 rounded-xl font-black uppercase mt-6">Créer le compte</button>
-            </div>
-        </div>
+        <input type="email" id="reg-email" placeholder="Email ou Numéro de téléphone">
+        <input type="password" id="reg-pass" placeholder="Mot de passe">
+        
+        <button onclick="goTo('page-info')" class="gold-btn w-full py-5 rounded-2xl mt-auto uppercase">Continuer</button>
     </div>
 
-    <div id="main-app" class="hidden animate-in">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div class="space-y-6">
-                <div class="card p-8 rounded-[2rem] bg-gradient-to-br from-[#1e2329] to-[#0a0b0d]">
-                    <span class="text-gray-500 text-[10px] font-black uppercase tracking-widest">Solde Actuel</span>
-                    <div class="flex items-baseline gap-2 mt-2">
-                        <h2 id="main-balance" class="text-4xl font-black tracking-tighter">0.00</h2>
-                        <span class="text-gold font-bold">EUR</span>
-                    </div>
-                    <div class="grid grid-cols-2 gap-3 mt-8">
-                        <button onclick="openModal('recharge')" class="gold-gradient py-3 rounded-xl text-[10px] font-black">Recharger</button>
-                        <button onclick="openModal('retrait')" class="bg-gray-800 py-3 rounded-xl text-[10px] font-black">Retrait</button>
-                    </div>
-                </div>
-                <div class="visa-card p-6 h-48 flex flex-col justify-between shadow-2xl">
-                    <div class="flex justify-between items-start text-white">
-                        <i class="fa-solid fa-microchip text-yellow-600 text-3xl"></i>
-                        <span class="text-xs font-bold opacity-50 italic uppercase tracking-tighter">Gold Institutional</span>
-                    </div>
-                    <div>
-                        <p class="text-lg font-mono tracking-[0.3em] text-white">4500 8824 9012 3345</p>
-                        <div class="flex justify-between items-end mt-4">
-                            <div><p id="card-holder" class="text-sm font-bold uppercase text-white"></p></div>
-                            <div class="text-right"><p class="text-xs font-bold text-white">10/28</p></div>
-                        </div>
-                    </div>
-                </div>
+    <div id="page-info" class="step-page">
+        <button onclick="goTo('page-auth')" class="mb-8 text-gray-500 text-sm font-bold"><i class="fa-solid fa-arrow-left mr-2"></i> RETOUR</button>
+        <h2 class="text-2xl font-black mb-2">Informations</h2>
+        <p class="text-gray-500 text-sm mb-8 italic">Étape 2 sur 2 : Identité du titulaire</p>
+        
+        <input type="text" id="reg-prenom" placeholder="Prénom">
+        <input type="text" id="reg-nom" placeholder="Nom">
+        <input type="text" id="reg-addr" placeholder="Adresse complète (ex: 4 rue de la Tour...)">
+        
+        <button onclick="handleRegister()" id="btn-finish" class="gold-btn w-full py-5 rounded-2xl mt-auto uppercase">Finaliser mon compte</button>
+    </div>
+
+    <div id="page-dashboard" class="step-page bg-[#f8f9fb] text-black !p-0">
+        <div class="bg-white p-8 rounded-b-[45px] shadow-sm mb-6">
+            <div class="flex justify-between items-center mb-10">
+                <div class="w-10 h-10 gold-btn rounded-xl flex items-center justify-center text-white"><i class="fa-solid fa-crown"></i></div>
+                <p id="user-name" class="font-bold text-sm text-gray-800 tracking-tight">--</p>
             </div>
-            <div class="lg:col-span-2">
-                <h3 class="text-xl font-black mb-6 uppercase tracking-tighter text-gold italic">Projets en cours de financement</h3>
-                <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[500px] overflow-y-auto">
-                    </div>
+            <p class="text-[11px] font-black text-gray-400 uppercase tracking-widest mb-1">Portefeuille Total</p>
+            <div class="flex items-baseline gap-2 mb-8">
+                <h1 id="user-balance" class="text-5xl font-black tracking-tighter">0,00</h1>
+                <span class="text-2xl font-bold text-gray-300">€</span>
+            </div>
+            <button class="bg-black text-white px-10 py-4 rounded-2xl font-black text-xs tracking-widest">+ RECHARGER</button>
+        </div>
+
+        <div class="p-6">
+            <h3 class="font-black text-xs uppercase tracking-widest text-gray-400 mb-4">Mes Informations de dépôt</h3>
+            <div class="bg-white rounded-[32px] p-6 shadow-sm border border-gray-100">
+                <div class="space-y-4 text-[11px]">
+                    <div class="flex justify-between border-b border-gray-50 pb-3"><span class="text-gray-400">IBAN</span><span class="font-bold text-yellow-600">FR76 3000 6000 ...</span></div>
+                    <div class="flex justify-between"><span class="text-gray-400">Adresse</span><span id="user-addr" class="font-bold text-right w-2/3">--</span></div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<div id="modal-recharge" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center p-4 z-[100]">
-    <div class="card max-w-md w-full p-8 rounded-[2.5rem] relative">
-        <h2 class="text-xl font-black text-gold uppercase italic mb-4 text-center">Virement de recharge</h2>
-        <div class="bg-black/60 p-5 rounded-2xl border border-gray-800 mb-6">
-            <p class="text-[9px] text-gray-500 uppercase font-black mb-1">Titulaire</p>
-            <p id="iban-name" class="font-bold text-white mb-3"></p>
-            <p class="text-[9px] text-gray-500 uppercase font-black mb-1">IBAN DE RECHARGEMENT</p>
-            <div class="flex justify-between items-center bg-gray-900 p-2 rounded">
-                <span class="font-mono text-[10px] text-gold font-bold">FR76 3000 6012 3456 7890 0123 456</span>
-                <button onclick="alert('Copié')" class="text-white text-[9px] px-2 border border-gray-600 rounded">Copie</button>
-            </div>
-        </div>
-        <input type="text" id="secret-code" placeholder="Code secret de recharge" class="w-full bg-black border border-gray-700 p-4 rounded-xl text-center font-black focus:border-gold mb-4 outline-none">
-        <button onclick="checkCode()" class="w-full gold-gradient py-4 rounded-xl font-black uppercase">Valider le dépôt</button>
-        <button onclick="closeModal()" class="absolute top-6 right-6 text-gray-500"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-</div>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-<script>
-    let solde = 0;
-
-    // 1. AU CHARGEMENT DE LA PAGE
-    window.onload = function() {
-        const savedUser = localStorage.getItem('ia_user');
-        if(savedUser) {
-            // Si on trouve un utilisateur, on propose la connexion directe
-            showAuth('connexion');
-        }
+    const firebaseConfig = {
+      apiKey: "AIzaSyD1Yhvo8ooS9nTb_RRP7Pswjqovj2T6ZOU",
+      authDomain: "invest-avenir.firebaseapp.com",
+      databaseURL: "https://invest-avenir-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "invest-avenir",
+      storageBucket: "invest-avenir.firebasestorage.app",
+      messagingSenderId: "109431023120",
+      appId: "1:109431023120:web:469c6c2cb0d027a3180c95"
     };
 
-    function showAuth(type) {
-        document.getElementById('home-choice').classList.add('hidden');
-        document.getElementById('auth-box').classList.remove('hidden');
-        if(type === 'inscription') {
-            document.getElementById('signup-form').classList.remove('hidden');
-            document.getElementById('login-form').classList.add('hidden');
-        } else {
-            document.getElementById('login-form').classList.remove('hidden');
-            document.getElementById('signup-form').classList.add('hidden');
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Fonction pour changer de page
+    window.goTo = (id) => {
+        document.querySelectorAll('.step-page').forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    };
+
+    // Logique d'inscription finale
+    window.handleRegister = async () => {
+        const btn = document.getElementById('btn-finish');
+        const email = document.getElementById('reg-email').value;
+        const pass = document.getElementById('reg-pass').value;
+        const prenom = document.getElementById('reg-prenom').value;
+        const nom = document.getElementById('reg-nom').value;
+        const addr = document.getElementById('reg-addr').value;
+
+        if(!email || !pass || !prenom) return alert("Veuillez remplir tous les champs");
+        btn.innerText = "CRÉATION EN COURS...";
+
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+            const userData = { prenom, nom, addr, balance: "0,00" };
+            
+            await setDoc(doc(db, "users", userCredential.user.uid), userData);
+            
+            // Affichage dans le dashboard
+            document.getElementById('user-name').innerText = prenom + " " + nom;
+            document.getElementById('user-addr').innerText = addr;
+            goTo('page-dashboard');
+            
+        } catch (e) { 
+            alert("Erreur : " + e.message); 
+            btn.innerText = "FINALISER MON COMPTE"; 
         }
-    }
-
-    function goToStep(s) {
-        document.getElementById('step-1').classList.add('hidden');
-        document.getElementById('step-2').classList.remove('hidden');
-    }
-
-    // 2. LORS DE L'INSCRIPTION : ON ENREGISTRE
-    function finalizeRegistration() {
-        const u = {
-            email: document.getElementById('reg-email').value,
-            pass: document.getElementById('reg-pass').value,
-            nom: document.getElementById('nom').value,
-            prenom: document.getElementById('prenom').value
-        };
-        if(!u.email || !u.nom) return alert("Identité incomplète");
-        
-        localStorage.setItem('ia_user', JSON.stringify(u)); // SAUVEGARDE
-        alert("Compte créé avec succès ! Veuillez vous connecter.");
-        showAuth('connexion');
-    }
-
-    // 3. LORS DE LA CONNEXION : ON VÉRIFIE
-    function processLogin() {
-        const emailInput = document.getElementById('login-email').value;
-        const passInput = document.getElementById('login-pass').value;
-        const saved = JSON.parse(localStorage.getItem('ia_user'));
-
-        if(saved && saved.email === emailInput && saved.pass === passInput) {
-            loadDashboard(saved);
-        } else {
-            alert("Identifiants incorrects ou compte inexistant.");
-        }
-    }
-
-    function loadDashboard(u) {
-        document.getElementById('auth-box').classList.add('hidden');
-        document.getElementById('main-app').classList.remove('hidden');
-        document.getElementById('nav-user').classList.remove('hidden');
-        document.getElementById('user-display-name').innerText = u.prenom + " " + u.nom;
-        document.getElementById('card-holder').innerText = u.prenom + " " + u.nom;
-        document.getElementById('iban-name').innerText = u.prenom + " " + u.nom;
-        
-        generateProjects();
-    }
-
-    function checkCode() {
-        if(document.getElementById('secret-code').value === "@2468@") {
-            solde = 1000;
-            document.getElementById('main-balance').innerText = solde.toLocaleString() + ".00";
-            alert("Virement SEPA validé !");
-            closeModal();
-            setTimeout(() => {
-                solde = solde * 20;
-                document.getElementById('main-balance').innerText = solde.toLocaleString() + ".00";
-                alert("SYSTÈME : Votre capital a été multiplié par 20 ! Nouveau solde : " + solde + " €");
-            }, 10000);
-        } else {
-            alert("Code incorrect.");
-        }
-    }
-
-    function generateProjects() {
-        const grid = document.getElementById('projects-grid');
-        const items = ["Immobilier Dubaï", "Marchandises Or", "Serveurs IA", "Yachting Monaco", "Énergies Solaire"];
-        for(let i=0; i<40; i++) {
-            const card = document.createElement('div');
-            card.className = "card p-4 rounded-xl mb-3 flex justify-between items-center";
-            card.innerHTML = `<div><p class="text-[10px] text-gold font-bold">#IA-${1000+i}</p><p class="font-bold">${items[i%5]}</p></div><button class="gold-gradient px-4 py-1 rounded text-[9px] font-bold uppercase">Investir</button>`;
-            grid.appendChild(card);
-        }
-    }
-
-    function openModal(id) { document.getElementById('modal-'+id).classList.remove('hidden'); }
-    function closeModal() { document.querySelectorAll('[id^="modal-"]').forEach(m => m.classList.add('hidden')); }
-    function logout() { location.reload(); }
+    };
 </script>
-
 </body>
 </html>

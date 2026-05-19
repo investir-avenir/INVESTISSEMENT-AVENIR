@@ -3,83 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Investissement & Avenir</title>
+    <title>Investissement & Avenir | Inscription Sécurisée</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { background-color: #000; color: #fff; font-family: sans-serif; margin: 0; }
-        .gold-btn { background: linear-gradient(135deg, #d4af37 0%, #f1d592 100%); color: #000; font-weight: 800; }
-        .step-page { display: none; min-h-screen; flex-direction: column; padding: 24px; }
-        .step-page.active { display: flex; }
-        input { background: #111!important; border: 1px solid #333!important; color: white!important; border-radius: 16px!important; padding: 18px!important; width: 100%; margin-bottom: 16px; outline: none; }
-        .nav-bottom { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; color: #888; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #eee; }
+        body { background-color: #000; color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; }
+        .gold-btn { background: linear-gradient(135deg, #d4af37 0%, #f1d592 100%); color: #000; font-weight: 800; transition: all 0.3s; }
+        .gold-btn:active { transform: scale(0.95); opacity: 0.9; }
+        .step-page { display: none; min-h-screen; flex-direction: column; padding: 30px; animation: fadeIn 0.4s ease-out; }
+        .active { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        input { background: #111!important; border: 1px solid #333!important; color: white!important; border-radius: 16px!important; padding: 18px!important; width: 100%; margin-bottom: 16px; outline: none; font-size: 16px; }
+        input:focus { border-color: #d4af37!important; }
+        .glass-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 25px; }
     </style>
 </head>
 <body>
 
 <div id="app">
-    <div id="page-welcome" class="step-page active items-center justify-center text-center">
-        <div class="w-20 h-20 gold-btn rounded-3xl flex items-center justify-center mb-6 shadow-2xl">
-            <i class="fa-solid fa-shield-halved text-3xl"></i>
+    <div id="step-auth" class="step-page active">
+        <div class="mb-10 text-center">
+            <h1 class="text-xl font-black uppercase tracking-widest text-yellow-500">Ouverture de compte</h1>
+            <p class="text-gray-500 text-xs mt-2 uppercase tracking-tighter">Étape 1 : Accès sécurisé</p>
         </div>
-        <h1 class="text-2xl font-black uppercase tracking-widest mb-10">Investissement <br><span class="text-yellow-500">&</span> Avenir</h1>
-        <button onclick="goTo('page-auth')" class="gold-btn w-full max-w-xs py-5 rounded-2xl mb-4 uppercase">Créer un compte</button>
-        <button onclick="goTo('page-login')" class="w-full max-w-xs py-5 rounded-2xl border border-white/20 uppercase font-bold text-sm">Se connecter</button>
+        <div id="recaptcha-container"></div>
+        <input type="tel" id="reg-phone" placeholder="Numéro de téléphone (+33...)">
+        <input type="email" id="reg-email" placeholder="Adresse E-mail">
+        <input type="password" id="reg-pass" placeholder="Créer un mot de passe">
+        <p class="text-[10px] text-gray-600 mb-6 px-2 text-center">En continuant, vous recevrez un code de vérification par SMS.</p>
+        <button onclick="sendSMS()" id="btn-sms" class="gold-btn w-full py-5 rounded-2xl mt-auto uppercase">Recevoir le code</button>
     </div>
 
-    <div id="page-auth" class="step-page">
-        <button onclick="goTo('page-welcome')" class="mb-8 text-gray-500 text-sm font-bold"><i class="fa-solid fa-arrow-left mr-2"></i> RETOUR</button>
-        <h2 class="text-2xl font-black mb-2">Identifiants</h2>
-        <p class="text-gray-500 text-sm mb-8 italic">Étape 1 sur 2 : Sécurité du compte</p>
-        
-        <input type="email" id="reg-email" placeholder="Email ou Numéro de téléphone">
-        <input type="password" id="reg-pass" placeholder="Mot de passe">
-        
-        <button onclick="goTo('page-info')" class="gold-btn w-full py-5 rounded-2xl mt-auto uppercase">Continuer</button>
+    <div id="step-verify" class="step-page">
+        <button onclick="goTo('step-auth')" class="mb-8 text-gray-500"><i class="fa-solid fa-arrow-left"></i> Retour</button>
+        <h2 class="text-2xl font-black mb-2">Vérification</h2>
+        <p class="text-gray-500 mb-10">Saisissez le code reçu par SMS.</p>
+        <input type="text" id="sms-code" placeholder="Code à 6 chiffres" maxlength="6" class="text-center tracking-[1em] font-bold">
+        <button onclick="verifySMS()" id="btn-verify" class="gold-btn w-full py-5 rounded-2xl mt-auto uppercase">Vérifier le numéro</button>
     </div>
 
-    <div id="page-info" class="step-page">
-        <button onclick="goTo('page-auth')" class="mb-8 text-gray-500 text-sm font-bold"><i class="fa-solid fa-arrow-left mr-2"></i> RETOUR</button>
-        <h2 class="text-2xl font-black mb-2">Informations</h2>
-        <p class="text-gray-500 text-sm mb-8 italic">Étape 2 sur 2 : Identité du titulaire</p>
-        
+    <div id="step-info" class="step-page">
+        <h2 class="text-2xl font-black mb-2">Votre Profil</h2>
+        <p class="text-gray-500 mb-8">Informations légales pour votre IBAN.</p>
         <input type="text" id="reg-prenom" placeholder="Prénom">
-        <input type="text" id="reg-nom" placeholder="Nom">
-        <input type="text" id="reg-addr" placeholder="Adresse complète (ex: 4 rue de la Tour...)">
+        <input type="text" id="reg-nom" placeholder="Nom de famille">
+        <input type="date" id="reg-dob" placeholder="Date de naissance">
+        <input type="text" id="reg-addr" placeholder="Adresse de résidence complète">
         
-        <button onclick="handleRegister()" id="btn-finish" class="gold-btn w-full py-5 rounded-2xl mt-auto uppercase">Finaliser mon compte</button>
+        <div class="glass-card mt-4 flex items-center gap-4">
+            <i class="fa-solid fa-camera text-2xl text-yellow-600"></i>
+            <div>
+                <p class="text-xs font-bold">Vérification d'identité (KYC)</p>
+                <p class="text-[10px] text-gray-500">Préparez votre pièce d'identité pour l'étape finale.</p>
+            </div>
+        </div>
+        <button onclick="handleRegister()" id="btn-final" class="gold-btn w-full py-5 rounded-2xl mt-auto uppercase">Finaliser mon dossier</button>
     </div>
 
-    <div id="page-dashboard" class="step-page bg-[#f8f9fb] text-black !p-0">
-        <div class="bg-white p-8 rounded-b-[45px] shadow-sm mb-6">
+    <div id="step-dashboard" class="step-page bg-white text-black !p-0">
+        <div class="p-8 bg-[#111] text-white rounded-b-[45px] shadow-2xl">
             <div class="flex justify-between items-center mb-10">
-                <div class="w-10 h-10 gold-btn rounded-xl flex items-center justify-center text-white"><i class="fa-solid fa-crown"></i></div>
-                <p id="user-name" class="font-bold text-sm text-gray-800 tracking-tight">--</p>
-            </div>
-            <p class="text-[11px] font-black text-gray-400 uppercase tracking-widest mb-1">Portefeuille Total</p>
-            <div class="flex items-baseline gap-2 mb-8">
-                <h1 id="user-balance" class="text-5xl font-black tracking-tighter">0,00</h1>
-                <span class="text-2xl font-bold text-gray-300">€</span>
-            </div>
-            <button class="bg-black text-white px-10 py-4 rounded-2xl font-black text-xs tracking-widest">+ RECHARGER</button>
-        </div>
-
-        <div class="p-6">
-            <h3 class="font-black text-xs uppercase tracking-widest text-gray-400 mb-4">Mes Informations de dépôt</h3>
-            <div class="bg-white rounded-[32px] p-6 shadow-sm border border-gray-100">
-                <div class="space-y-4 text-[11px]">
-                    <div class="flex justify-between border-b border-gray-50 pb-3"><span class="text-gray-400">IBAN</span><span class="font-bold text-yellow-600">FR76 3000 6000 ...</span></div>
-                    <div class="flex justify-between"><span class="text-gray-400">Adresse</span><span id="user-addr" class="font-bold text-right w-2/3">--</span></div>
+                <div class="w-10 h-10 gold-btn rounded-xl flex items-center justify-center"><i class="fa-solid fa-crown"></i></div>
+                <div class="text-right">
+                    <p id="display-name" class="font-black text-sm uppercase">--</p>
+                    <p class="text-[9px] text-yellow-500 font-bold uppercase">Membre Institutionnel</p>
                 </div>
             </div>
+            <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Solde Total</p>
+            <div class="flex items-baseline gap-2 mb-4">
+                <h1 class="text-5xl font-black tracking-tighter">0,00</h1>
+                <span class="text-2xl font-bold text-gray-600">€</span>
+            </div>
+        </div>
+        
+        <div class="p-8 space-y-6">
+            <div class="border-2 border-dashed border-gray-200 rounded-[30px] p-6">
+                <p class="text-[10px] text-gray-400 font-black uppercase mb-3">Détails du compte</p>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-medium">Statut KYC</span>
+                        <span class="bg-orange-100 text-orange-600 text-[9px] px-3 py-1 rounded-full font-black uppercase">Examen en cours</span>
+                    </div>
+                    <div class="flex justify-between items-center border-t pt-4">
+                        <span class="text-xs font-medium">IBAN</span>
+                        <span class="text-[10px] font-mono font-bold text-gray-400">Génération en cours...</span>
+                    </div>
+                </div>
+            </div>
+            <button class="bg-black text-white w-full py-5 rounded-[20px] font-black text-xs uppercase tracking-widest">+ Effectuer un dépôt</button>
         </div>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyD1Yhvo8ooS9nTb_RRP7Pswjqovj2T6ZOU",
@@ -94,39 +113,73 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+    let confirmationResult;
 
-    // Fonction pour changer de page
     window.goTo = (id) => {
         document.querySelectorAll('.step-page').forEach(p => p.classList.remove('active'));
         document.getElementById(id).classList.add('active');
+        window.scrollTo(0,0);
     };
 
-    // Logique d'inscription finale
+    // SMS : Envoi
+    window.sendSMS = async () => {
+        const phone = document.getElementById('reg-phone').value;
+        const btn = document.getElementById('btn-sms');
+        if(!phone) return alert("Entrez votre numéro");
+        
+        btn.innerText = "CONNEXION AU SERVEUR...";
+        const verifier = new RecaptchaVerifier(auth, 'recaptcha-container', { size: 'invisible' });
+        
+        try {
+            confirmationResult = await signInWithPhoneNumber(auth, phone, verifier);
+            goTo('step-verify');
+        } catch (e) { 
+            alert("Erreur SMS : " + e.message); 
+            btn.innerText = "RECEVOIR LE CODE"; 
+        }
+    };
+
+    // SMS : Vérification
+    window.verifySMS = async () => {
+        const code = document.getElementById('sms-code').value;
+        const btn = document.getElementById('btn-verify');
+        btn.innerText = "VÉRIFICATION...";
+        try {
+            await confirmationResult.confirm(code);
+            goTo('step-info');
+        } catch (e) { 
+            alert("Code incorrect."); 
+            btn.innerText = "VÉRIFIER LE NUMÉRO";
+        }
+    };
+
+    // FINALISATION : Enregistrement Firestore
     window.handleRegister = async () => {
-        const btn = document.getElementById('btn-finish');
+        const btn = document.getElementById('btn-final');
         const email = document.getElementById('reg-email').value;
         const pass = document.getElementById('reg-pass').value;
-        const prenom = document.getElementById('reg-prenom').value;
-        const nom = document.getElementById('reg-nom').value;
-        const addr = document.getElementById('reg-addr').value;
+        const info = {
+            prenom: document.getElementById('reg-prenom').value,
+            nom: document.getElementById('reg-nom').value,
+            dob: document.getElementById('reg-dob').value,
+            addr: document.getElementById('reg-addr').value,
+            balance: "0,00"
+        };
 
-        if(!email || !pass || !prenom) return alert("Veuillez remplir tous les champs");
-        btn.innerText = "CRÉATION EN COURS...";
+        if(!info.prenom || !info.nom) return alert("Veuillez remplir vos informations");
+        btn.innerText = "SÉCURISATION DU COMPTE...";
 
         try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
-            const userData = { prenom, nom, addr, balance: "0,00" };
+            const user = auth.currentUser;
+            // On lie l'email/password au compte déjà créé via SMS
+            // Ou on enregistre simplement les données dans Firestore sous l'UID du téléphone
+            await setDoc(doc(db, "users", user.uid), info);
             
-            await setDoc(doc(db, "users", userCredential.user.uid), userData);
-            
-            // Affichage dans le dashboard
-            document.getElementById('user-name').innerText = prenom + " " + nom;
-            document.getElementById('user-addr').innerText = addr;
-            goTo('page-dashboard');
-            
+            document.getElementById('display-name').innerText = info.prenom + " " + info.nom;
+            goTo('step-dashboard');
         } catch (e) { 
-            alert("Erreur : " + e.message); 
-            btn.innerText = "FINALISER MON COMPTE"; 
+            alert(e.message); 
+            btn.innerText = "FINALISER MON DOSSIER";
         }
     };
 </script>

@@ -3,228 +3,242 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Investissement & Avenir Europe</title>
+    <title>Investissement & Avenir EU</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* Verrouillage strict du défilement pour l'inscription */
-        html, body { 
-            height: 100%; 
-            margin: 0; 
-            overflow: hidden; 
-            background-color: #000; 
-            font-family: 'Inter', sans-serif;
-        }
-
-        .step-page { 
-            display: none; 
-            height: 100vh; 
-            width: 100vw; 
-            flex-direction: column; 
-            padding: 25px; 
-            justify-content: space-between;
-            box-sizing: border-box;
-        }
+        html, body { height: 100%; margin: 0; overflow: hidden; background-color: #000; font-family: 'Inter', sans-serif; color: white; }
+        
+        /* Conteneur d'étapes sans défilement */
+        .step-page { display: none; height: 100vh; width: 100vw; flex-direction: column; padding: 20px; justify-content: flex-start; }
         .active { display: flex; }
 
-        /* Inputs Professionnels */
+        .form-container { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; }
+        .form-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 15px; }
+        
         input, select { 
-            background: #121212!important; 
-            border: 1px solid #222!important; 
-            color: #fff!important; 
-            border-radius: 12px!important; 
-            padding: 14px!important; 
-            width: 100%; 
-            outline: none;
-            font-size: 15px;
+            background: #1a1a1a!important; border: 1px solid #333!important; color: #fff!important; 
+            border-radius: 12px; padding: 14px; width: 100%; outline: none; font-size: 14px;
         }
 
+        /* Bouton remonté */
+        .action-area { padding-bottom: 40px; margin-top: 20px; }
         .gold-btn { 
-            background: linear-gradient(135deg, #d4af37 0%, #f1d592 100%); 
-            color: #000; 
-            font-weight: 800; 
-            padding: 16px; 
-            border-radius: 14px; 
-            text-transform: uppercase;
-            font-size: 11px;
-            letter-spacing: 1px;
-            margin-bottom: 20px; /* Remonté comme demandé */
+            background: linear-gradient(135deg, #d4af37 0%, #f1d592 100%); color: #000; 
+            font-weight: 800; padding: 16px; border-radius: 14px; text-transform: uppercase; font-size: 12px;
+            width: 100%;
         }
 
-        /* Dashboard avec Scroll pour les 300 projets */
-        #page-dashboard { overflow-y: auto; display: none; height: 100vh; background: #f4f7f6; color: #111; padding: 0; }
-        #page-dashboard.active { display: block; }
-
-        /* Cartes de Projets en Texte/Couleurs */
-        .project-card { background: white; border-radius: 20px; margin: 15px; overflow: hidden; border: 1px solid #eee; }
-        .project-visual { 
-            height: 140px; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            color: white; 
-            text-align: center;
-            padding: 15px;
+        /* Barre de recherche pays */
+        .search-box { position: relative; }
+        .search-results { 
+            position: absolute; top: 100%; left: 0; right: 0; background: #222; 
+            border-radius: 0 0 12px 12px; max-height: 120px; overflow-y: auto; z-index: 100; display: none;
+            border: 1px solid #444;
         }
-        .project-visual i { font-size: 40px; margin-bottom: 10px; opacity: 0.9; }
-        .project-visual span { font-weight: 900; font-size: 18px; text-transform: uppercase; letter-spacing: 1px; }
+        .search-item { padding: 12px; border-bottom: 1px solid #333; font-size: 13px; }
 
-        .loader-screen {
-            display: none; position: fixed; inset: 0; background: #000; z-index: 10000;
-            flex-direction: column; align-items: center; justify-content: center;
-        }
+        /* Dashboard */
+        #page-dashboard { background: #f8fafc; color: #000; overflow-y: auto; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
     </style>
 </head>
 <body>
 
 <div id="app">
-    <div id="loader" class="loader-screen">
-        <div class="w-10 h-10 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
-        <p id="loader-text" class="text-yellow-500 font-bold text-[10px] mt-6 uppercase tracking-widest text-center px-10">Sécurisation européenne...</p>
-    </div>
-
-    <div id="page-welcome" class="step-page active">
-        <div class="mt-16 text-center">
-            <div class="w-16 h-16 bg-yellow-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-yellow-500/20">
-                <i class="fa-solid fa-shield-halved text-black text-2xl"></i>
-            </div>
-            <h1 class="text-3xl font-black text-white italic">INVESTISSEMENT<br>& AVENIR <span class="text-yellow-500">EU</span></h1>
+    <div id="page-choice" class="step-page active">
+        <div class="form-container text-center">
+            <h1 class="text-4xl font-black italic mb-2">I&A <span class="text-yellow-500">EUROPE</span></h1>
+            <p class="text-gray-500 text-xs uppercase tracking-[3px]">Wealth Management</p>
         </div>
-        <button onclick="goTo('page-step1')" class="gold-btn w-full">Démarrer l'inscription</button>
+        <div class="action-area space-y-4">
+            <button onclick="goTo('page-step1')" class="gold-btn">Créer un compte</button>
+            <button onclick="alert('Liaison sécurisée...')" class="w-full py-4 text-[10px] font-bold text-white/50 border border-gray-800 rounded-xl uppercase">Se connecter</button>
+        </div>
     </div>
 
     <div id="page-step1" class="step-page">
-        <div>
-            <h2 class="text-xl font-bold text-yellow-500 uppercase mt-6">Localisation</h2>
-            <div class="mt-8 space-y-4">
-                <label class="text-[10px] text-gray-500 uppercase font-bold px-2">Nationalité Européenne</label>
-                <select id="nat-select"></select>
-                <label class="text-[10px] text-gray-500 uppercase font-bold px-2">Pays de Résidence</label>
-                <select id="res-select"></select>
+        <div class="form-container">
+            <h2 class="text-yellow-500 font-bold uppercase text-[10px] mb-2 tracking-widest">Étape 01</h2>
+            <h1 class="text-2xl font-bold mb-6">Contact Mobile</h1>
+            <div class="form-grid">
+                <input type="tel" id="phone" placeholder="+33 6 00 00 00 00">
             </div>
         </div>
-        <button onclick="goTo('page-step2')" class="gold-btn w-full">Suivant</button>
+        <div class="action-area">
+            <button onclick="goTo('page-step2')" class="gold-btn">Suivant</button>
+        </div>
     </div>
 
     <div id="page-step2" class="step-page">
-        <div>
-            <h2 class="text-xl font-bold text-yellow-500 uppercase mt-6">Coordonnées</h2>
-            <div class="mt-8 space-y-4">
-                <input type="text" placeholder="Prénom et Nom">
-                <input type="email" placeholder="Adresse Email">
-                <input type="tel" placeholder="Numéro de téléphone">
+        <div class="form-container">
+            <h2 class="text-yellow-500 font-bold uppercase text-[10px] mb-2 tracking-widest">Étape 02</h2>
+            <h1 class="text-2xl font-bold mb-4">État Civil</h1>
+            <div class="form-grid">
+                <select id="sexe"><option>Civilité</option><option>Monsieur</option><option>Madame</option></select>
+                <input type="text" placeholder="Prénom">
+                <input type="text" placeholder="Nom de famille">
+                <input type="text" placeholder="Date de naissance (JJ/MM/AAAA)">
+                <div class="search-box">
+                    <input type="text" id="nat-search" onkeyup="filterCountries(this, 'nat-results')" placeholder="Nationalité (Recherche)...">
+                    <div id="nat-results" class="search-results"></div>
+                </div>
             </div>
         </div>
-        <button onclick="startCreation()" class="gold-btn w-full">Créer mon compte Europe</button>
+        <div class="action-area">
+            <button onclick="goTo('page-step3')" class="gold-btn">Suivant</button>
+        </div>
+    </div>
+
+    <div id="page-step3" class="step-page">
+        <div class="form-container">
+            <h2 class="text-yellow-500 font-bold uppercase text-[10px] mb-2 tracking-widest">Étape 03</h2>
+            <h1 class="text-2xl font-bold mb-4">Résidence Fiscale</h1>
+            <div class="form-grid">
+                <div class="search-box">
+                    <input type="text" id="res-search" onkeyup="filterCountries(this, 'res-results')" placeholder="Pays de résidence...">
+                    <div id="res-results" class="search-results"></div>
+                </div>
+                <div class="grid grid-cols-4 gap-2">
+                    <input type="text" class="col-span-1" placeholder="N°">
+                    <input type="text" class="col-span-3" placeholder="Nom de la voie">
+                </div>
+                <input type="text" placeholder="Code Postal">
+                <input type="text" placeholder="Ville">
+            </div>
+        </div>
+        <div class="action-area">
+            <button onclick="goTo('page-step4')" class="gold-btn">Suivant</button>
+        </div>
+    </div>
+
+    <div id="page-step4" class="step-page">
+        <div class="form-container">
+            <h2 class="text-yellow-500 font-bold uppercase text-[10px] mb-2 tracking-widest">Étape 04</h2>
+            <h1 class="text-2xl font-bold mb-4">Protection des données</h1>
+            <div class="bg-zinc-900 p-5 rounded-xl border border-white/5 h-64 overflow-y-auto">
+                <p class="text-[10px] leading-relaxed text-gray-400">
+                    <strong class="text-white uppercase">Politique de Confidentialité I&A Europe</strong><br><br>
+                    Conformément au Règlement Général sur la Protection des Données (RGPD), Investissement & Avenir Europe s'engage à assurer la sécurité et la confidentialité de vos informations personnelles.<br><br>
+                    <strong>1. Collecte :</strong> Les données collectées sont strictement nécessaires à l'ouverture de votre compte de gestion de patrimoine et à la vérification de votre identité (KYC).<br><br>
+                    <strong>2. Utilisation :</strong> Vos informations sont utilisées pour la génération de vos accès bancaires sécurisés et le suivi de vos investissements.<br><br>
+                    <strong>3. Sécurité :</strong> Nous utilisons un cryptage AES-256 bits. Vos fonds sont isolés sur des comptes partenaires régulés par l'Autorité de Contrôle Prudentiel et de Résolution (ACPR).<br><br>
+                    <strong>4. Droits :</strong> Vous disposez d'un droit d'accès, de rectification et de suppression de vos données via notre support client.
+                </p>
+            </div>
+            <div class="mt-6 flex gap-4 items-center">
+                <input type="checkbox" id="privacy" class="w-6 h-6">
+                <label for="privacy" class="text-[10px] text-gray-400 font-bold uppercase">J'accepte les conditions</label>
+            </div>
+        </div>
+        <div class="action-area">
+            <button onclick="startSecureLoading()" class="gold-btn">Ouvrir mon compte</button>
+        </div>
+    </div>
+
+    <div id="page-loading" class="step-page justify-center items-center text-center">
+        <div class="w-12 h-12 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
+        <p id="loading-msg" class="text-yellow-500 font-black text-[9px] uppercase tracking-[4px]">Vérification de sécurité...</p>
     </div>
 
     <div id="page-dashboard" class="step-page">
-        <div class="p-6 bg-white border-b sticky top-0 z-50 flex justify-between items-center shadow-sm">
-            <h3 class="font-black italic text-lg text-slate-800">I&A <span class="text-yellow-600">EUROPE</span></h3>
-            <div class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-400"><i class="fa-solid fa-user"></i></div>
+        <div class="p-5 flex justify-between items-center bg-white border-b shadow-sm">
+            <span class="font-black italic text-slate-800">I&A <span class="text-yellow-600">EUROPE</span></span>
+            <i onclick="alert('Profil : Utilisateur Certifié Europe')" class="fa-solid fa-circle-user text-2xl text-slate-300"></i>
         </div>
 
-        <div class="p-4">
+        <div class="p-5">
             <div class="bg-slate-900 rounded-[35px] p-8 text-white shadow-2xl mb-8">
-                <p class="text-[10px] uppercase text-slate-500 font-bold tracking-widest">Solde du compte</p>
+                <p class="text-[10px] uppercase text-slate-500 font-bold tracking-widest">Portefeuille Portefeuille</p>
                 <h2 class="text-4xl font-black mt-2">0,00 €</h2>
                 <div class="flex gap-3 mt-8">
-                    <button class="bg-white text-black text-[10px] font-black py-4 rounded-xl flex-1 uppercase">Déposer</button>
-                    <button class="bg-slate-800 text-slate-400 text-[10px] font-black py-4 rounded-xl flex-1 uppercase">Retrait</button>
+                    <button onclick="showModal('modal-recharge')" class="bg-white text-black font-black py-4 rounded-xl flex-1 text-[10px] uppercase">Recharger</button>
+                    <button onclick="handleRetrait()" class="bg-slate-800 text-slate-400 font-black py-4 rounded-xl flex-1 text-[10px] uppercase">Retrait</button>
                 </div>
             </div>
-
-            <h4 class="font-black text-xs uppercase tracking-widest px-2 mb-6 flex items-center gap-2">
-                <i class="fa-solid fa-euro-sign text-yellow-600"></i> Projets Européens Actifs
-            </h4>
-            <div id="project-list"></div>
+            <h3 class="font-black text-xs uppercase mb-4 px-2">Actifs Européens</h3>
+            <div id="dash-projects" class="space-y-4 px-2"></div>
         </div>
-        
-        <div class="h-24"></div>
-        <div class="fixed bottom-0 w-full bg-white border-t flex justify-around p-5 z-50">
+
+        <div class="fixed bottom-0 w-full bg-white border-t flex justify-around p-5">
             <i class="fa-solid fa-house text-yellow-600 text-xl"></i>
-            <i class="fa-solid fa-chart-line text-slate-300 text-xl"></i>
-            <i class="fa-solid fa-wallet text-slate-300 text-xl"></i>
+            <i onclick="alert('Support : Notre équipe est à votre écoute.')" class="fa-solid fa-headset text-slate-300 text-xl"></i>
+            <i onclick="showModal('modal-recharge')" class="fa-solid fa-wallet text-slate-300 text-xl"></i>
+        </div>
+    </div>
+
+    <div id="modal-recharge" class="modal" onclick="closeModal()">
+        <div class="bg-white rounded-3xl p-8 w-full max-w-sm text-black" onclick="event.stopPropagation()">
+            <h3 class="font-black text-xl mb-6">Dépôt Bancaire</h3>
+            <div class="bg-slate-50 p-6 rounded-2xl border border-dashed border-slate-300 space-y-4">
+                <div><p class="text-[9px] text-slate-400 uppercase font-bold">Bénéficiaire</p><p class="font-bold">INVEST & AVENIR LTD</p></div>
+                <div><p class="text-[9px] text-slate-400 uppercase font-bold">IBAN</p><p class="font-mono text-sm font-bold">FR76 3000 6000 0123 4567 8901 234</p></div>
+            </div>
+            <button onclick="closeModal()" class="w-full mt-8 bg-black text-white py-5 rounded-xl font-bold uppercase text-xs">J'ai effectué le virement</button>
         </div>
     </div>
 </div>
 
 <script>
-    const PAYS_EU = [
-        "Allemagne", "Autriche", "Belgique", "Bulgarie", "Chypre", "Croatie", "Danemark", "Espagne", 
-        "Estonie", "Finlande", "France", "Grèce", "Hongrie", "Irlande", "Italie", "Lettonie", 
-        "Lituanie", "Luxembourg", "Malte", "Pays-Bas", "Pologne", "Portugal", "République Tchèque", 
-        "Roumanie", "Slovaquie", "Slovénie", "Suède", "Suisse", "Monaco", "Norvège"
-    ];
-
-    const THEMES = [
-        { icon: "fa-building", color: "linear-gradient(135deg, #1e293b, #334155)", label: "IMMOBILIER" },
-        { icon: "fa-leaf", color: "linear-gradient(135deg, #065f46, #059669)", label: "ÉCOLOGIE" },
-        { icon: "fa-bolt", color: "linear-gradient(135deg, #1e40af, #3b82f6)", label: "ÉNERGIE" },
-        { icon: "fa-microchip", color: "linear-gradient(135deg, #4c1d95, #7c3aed)", label: "TECH" },
-        { icon: "fa-wine-glass", color: "linear-gradient(135deg, #7c2d12, #b91c1c)", label: "VITICULTURE" }
-    ];
-
-    // Remplissage des pays
-    const populatePays = () => {
-        const selects = [document.getElementById('nat-select'), document.getElementById('res-select')];
-        selects.forEach(s => {
-            PAYS_EU.sort().forEach(p => {
-                let opt = document.createElement('option');
-                opt.value = p; opt.innerText = p;
-                s.appendChild(opt);
-            });
-        });
-    };
-    populatePays();
+    const EU_COUNTRIES = ["Allemagne", "Autriche", "Belgique", "Espagne", "France", "Italie", "Luxembourg", "Monaco", "Pays-Bas", "Portugal", "Suisse", "Suède", "Norvège", "Danemark", "Irlande"];
 
     function goTo(id) {
         document.querySelectorAll('.step-page').forEach(p => p.classList.remove('active'));
         document.getElementById(id).classList.add('active');
     }
 
-    function startCreation() {
-        document.getElementById('loader').style.display = 'flex';
-        const msgs = ["Vérification Européenne...", "Validation IBAN...", "Sécurisation KYC...", "Prêt !"];
-        let i = 0;
-        const interval = setInterval(() => { 
-            if(i < msgs.length) document.getElementById('loader-text').innerText = msgs[i++]; 
-        }, 3500);
+    function filterCountries(input, resultId) {
+        const val = input.value.toLowerCase();
+        const resDiv = document.getElementById(resultId);
+        resDiv.innerHTML = '';
+        if(!val) { resDiv.style.display = 'none'; return; }
+        
+        const filtered = EU_COUNTRIES.filter(c => c.toLowerCase().includes(val));
+        if(filtered.length > 0) {
+            resDiv.style.display = 'block';
+            filtered.forEach(c => {
+                const item = document.createElement('div');
+                item.className = 'search-item';
+                item.innerText = c;
+                item.onclick = () => { input.value = c; resDiv.style.display = 'none'; };
+                resDiv.appendChild(item);
+            });
+        }
+    }
+
+    function startSecureLoading() {
+        if(!document.getElementById('privacy').checked) return alert("Veuillez valider la politique.");
+        goTo('page-loading');
+        const msgs = ["Initialisation...", "Contrôle KYC...", "Sécurisation...", "Ouverture IBAN...", "Prêt !"];
+        let count = 0;
+        const interval = setInterval(() => {
+            if(count < msgs.length) document.getElementById('loading-msg').innerText = msgs[count++];
+        }, 3000);
 
         setTimeout(() => {
             clearInterval(interval);
-            document.getElementById('loader').style.display = 'none';
-            render300Projects();
+            renderDashboardProjects();
             goTo('page-dashboard');
         }, 15000);
     }
 
-    function render300Projects() {
-        const container = document.getElementById('project-list');
+    function renderDashboardProjects() {
         let html = '';
         for(let i=1; i<=300; i++) {
-            const theme = THEMES[i % THEMES.length];
-            const pays = PAYS_EU[i % PAYS_EU.length];
-            html += `
-                <div class="project-card">
-                    <div class="project-visual" style="background: ${theme.color}">
-                        <i class="fa-solid ${theme.icon}"></i>
-                        <span>${theme.label}</span>
-                    </div>
-                    <div class="p-5">
-                        <div class="flex justify-between items-center mb-2">
-                            <h5 class="font-black text-sm text-slate-800">Projet Européen #${1000 + i}</h5>
-                            <span class="text-green-600 font-black text-xs">+${(Math.random() * 5 + 7).toFixed(1)}%</span>
-                        </div>
-                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest"><i class="fa-solid fa-location-dot mr-1"></i> ${pays}</p>
-                        <button class="w-full mt-4 bg-slate-50 text-slate-800 py-3 rounded-xl font-black text-[9px] uppercase border border-slate-100">Investir</button>
-                    </div>
-                </div>
-            `;
+            html += `<div class="bg-white border rounded-2xl p-5 flex justify-between items-center shadow-sm">
+                <div><p class="font-black text-sm text-slate-800">Projet Patrimoine #${100+i}</p><p class="text-[9px] text-slate-400 uppercase font-bold">Immobilier • Union Européenne</p></div>
+                <span class="text-green-600 font-black text-xs">+${(Math.random() * 5 + 7).toFixed(1)}%</span>
+            </div>`;
         }
-        container.innerHTML = html;
+        document.getElementById('dash-projects').innerHTML = html;
     }
+
+    function handleRetrait() {
+        alert("Action impossible : Votre solde est insuffisant (0,00 €).");
+    }
+
+    function showModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModal() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
 </script>
 
 </body>

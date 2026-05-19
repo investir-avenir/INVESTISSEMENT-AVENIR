@@ -3,107 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Investissement & Avenir | Inscription Sécurisée</title>
+    <title>Investissement & Avenir | Inscription Europe</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { background-color: #000; color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; }
-        .gold-btn { background: linear-gradient(135deg, #d4af37 0%, #f1d592 100%); color: #000; font-weight: 800; transition: all 0.3s; }
-        .gold-btn:active { transform: scale(0.95); opacity: 0.9; }
-        .step-page { display: none; min-h-screen; flex-direction: column; padding: 30px; animation: fadeIn 0.4s ease-out; }
+        body { background-color: #000; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; }
+        .gold-btn { background: linear-gradient(135deg, #d4af37 0%, #f1d592 100%); color: #000; font-weight: 800; }
+        .step-page { display: none; min-h-screen; flex-direction: column; padding: 25px; animation: fadeIn 0.3s ease; }
         .active { display: flex; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        input { background: #111!important; border: 1px solid #333!important; color: white!important; border-radius: 16px!important; padding: 18px!important; width: 100%; margin-bottom: 16px; outline: none; font-size: 16px; }
-        input:focus { border-color: #d4af37!important; }
-        .glass-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 25px; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        input { background: #111!important; border: 1px solid #333!important; color: white!important; border-radius: 15px!important; padding: 18px!important; width: 100%; margin-bottom: 12px; outline: none; }
+        .country-item { display: flex; align-items: center; padding: 16px; border-bottom: 1px solid #222; cursor: pointer; transition: 0.2s; }
+        .country-item:hover { background: #111; }
     </style>
 </head>
 <body>
 
 <div id="app">
-    <div id="step-auth" class="step-page active">
-        <div class="mb-10 text-center">
-            <h1 class="text-xl font-black uppercase tracking-widest text-yellow-500">Ouverture de compte</h1>
-            <p class="text-gray-500 text-xs mt-2 uppercase tracking-tighter">Étape 1 : Accès sécurisé</p>
-        </div>
+    <div id="page-welcome" class="step-page active items-center justify-center text-center">
+        <h1 class="text-3xl font-black mb-12 text-yellow-500 italic">Investissement <br>& Avenir</h1>
+        <button onclick="goTo('page-phone')" class="gold-btn w-full py-5 rounded-2xl mb-4 uppercase">Inscription</button>
+        <button onclick="alert('Lien de connexion')" class="w-full py-5 rounded-2xl border border-white/20 uppercase font-bold text-sm">Se connecter</button>
+    </div>
+
+    <div id="page-phone" class="step-page">
+        <h2 class="text-2xl font-black mb-2">Votre numéro ?</h2>
+        <p class="text-gray-500 mb-8 text-sm">Pour sécuriser votre compte via SMS.</p>
         <div id="recaptcha-container"></div>
-        <input type="tel" id="reg-phone" placeholder="Numéro de téléphone (+33...)">
-        <input type="email" id="reg-email" placeholder="Adresse E-mail">
-        <input type="password" id="reg-pass" placeholder="Créer un mot de passe">
-        <p class="text-[10px] text-gray-600 mb-6 px-2 text-center">En continuant, vous recevrez un code de vérification par SMS.</p>
+        <input type="tel" id="reg-phone" placeholder="+33 6 00 00 00 00">
         <button onclick="sendSMS()" id="btn-sms" class="gold-btn w-full py-5 rounded-2xl mt-auto uppercase">Recevoir le code</button>
     </div>
 
-    <div id="step-verify" class="step-page">
-        <button onclick="goTo('step-auth')" class="mb-8 text-gray-500"><i class="fa-solid fa-arrow-left"></i> Retour</button>
-        <h2 class="text-2xl font-black mb-2">Vérification</h2>
-        <p class="text-gray-500 mb-10">Saisissez le code reçu par SMS.</p>
-        <input type="text" id="sms-code" placeholder="Code à 6 chiffres" maxlength="6" class="text-center tracking-[1em] font-bold">
-        <button onclick="verifySMS()" id="btn-verify" class="gold-btn w-full py-5 rounded-2xl mt-auto uppercase">Vérifier le numéro</button>
+    <div id="page-verify" class="step-page">
+        <h2 class="text-2xl font-black mb-2">Code de sécurité</h2>
+        <p class="text-gray-500 mb-8 text-sm">Saisissez le code reçu par SMS.</p>
+        <input type="text" id="sms-code" placeholder="000000" class="text-center tracking-[0.5em] text-xl font-bold">
+        <button onclick="verifySMS()" class="gold-btn w-full py-5 rounded-2xl mt-auto uppercase">Vérifier</button>
     </div>
 
-    <div id="step-info" class="step-page">
-        <h2 class="text-2xl font-black mb-2">Votre Profil</h2>
-        <p class="text-gray-500 mb-8">Informations légales pour votre IBAN.</p>
-        <input type="text" id="reg-prenom" placeholder="Prénom">
+    <div id="page-identity" class="step-page">
+        <h2 class="text-2xl font-black mb-6">Identité du titulaire</h2>
         <input type="text" id="reg-nom" placeholder="Nom de famille">
+        <input type="text" id="reg-prenom" placeholder="Prénom">
         <input type="date" id="reg-dob" placeholder="Date de naissance">
-        <input type="text" id="reg-addr" placeholder="Adresse de résidence complète">
-        
-        <div class="glass-card mt-4 flex items-center gap-4">
-            <i class="fa-solid fa-camera text-2xl text-yellow-600"></i>
-            <div>
-                <p class="text-xs font-bold">Vérification d'identité (KYC)</p>
-                <p class="text-[10px] text-gray-500">Préparez votre pièce d'identité pour l'étape finale.</p>
-            </div>
-        </div>
-        <button onclick="handleRegister()" id="btn-final" class="gold-btn w-full py-5 rounded-2xl mt-auto uppercase">Finaliser mon dossier</button>
+        <input type="text" id="reg-pob" placeholder="Lieu de naissance">
+        <button onclick="goTo('page-country')" class="gold-btn w-full py-5 rounded-2xl mt-auto uppercase">Suivant</button>
     </div>
 
-    <div id="step-dashboard" class="step-page bg-white text-black !p-0">
-        <div class="p-8 bg-[#111] text-white rounded-b-[45px] shadow-2xl">
-            <div class="flex justify-between items-center mb-10">
-                <div class="w-10 h-10 gold-btn rounded-xl flex items-center justify-center"><i class="fa-solid fa-crown"></i></div>
-                <div class="text-right">
-                    <p id="display-name" class="font-black text-sm uppercase">--</p>
-                    <p class="text-[9px] text-yellow-500 font-bold uppercase">Membre Institutionnel</p>
-                </div>
+    <div id="page-country" class="step-page">
+        <h2 class="text-2xl font-black mb-4 text-yellow-500">Pays de résidence</h2>
+        <input type="text" id="country-search" onkeyup="filterCountries()" placeholder="Chercher un pays européen...">
+        <div id="country-list" class="overflow-y-auto max-h-[450px] bg-[#080808] rounded-2xl border border-white/5">
             </div>
-            <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Solde Total</p>
-            <div class="flex items-baseline gap-2 mb-4">
-                <h1 class="text-5xl font-black tracking-tighter">0,00</h1>
-                <span class="text-2xl font-bold text-gray-600">€</span>
-            </div>
+        <input type="hidden" id="selected-country">
+    </div>
+
+    <div id="page-address" class="step-page">
+        <h2 class="text-2xl font-black mb-6 text-yellow-500">Adresse postale</h2>
+        <input type="text" id="reg-num-rue" placeholder="Numéro de rue">
+        <input type="text" id="reg-nom-rue" placeholder="Nom de la rue">
+        <input type="text" id="reg-ville" placeholder="Ville">
+        <input type="text" id="reg-cp" placeholder="Code Postal">
+        <button onclick="finalRegister()" id="btn-finish" class="gold-btn w-full py-5 rounded-2xl mt-auto uppercase">Confirmer l'inscription</button>
+    </div>
+
+    <div id="page-dashboard" class="step-page bg-white text-black !p-0">
+        <div class="p-8 bg-black text-white rounded-b-[45px] shadow-xl">
+            <h1 class="text-2xl font-black italic text-yellow-500">Investissement & Avenir</h1>
+            <p class="mt-4 text-xs font-bold text-gray-500 uppercase">Bienvenue, <span id="user-res" class="text-white"></span></p>
         </div>
-        
-        <div class="p-8 space-y-6">
-            <div class="border-2 border-dashed border-gray-200 rounded-[30px] p-6">
-                <p class="text-[10px] text-gray-400 font-black uppercase mb-3">Détails du compte</p>
-                <div class="space-y-4">
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs font-medium">Statut KYC</span>
-                        <span class="bg-orange-100 text-orange-600 text-[9px] px-3 py-1 rounded-full font-black uppercase">Examen en cours</span>
-                    </div>
-                    <div class="flex justify-between items-center border-t pt-4">
-                        <span class="text-xs font-medium">IBAN</span>
-                        <span class="text-[10px] font-mono font-bold text-gray-400">Génération en cours...</span>
-                    </div>
-                </div>
+        <div class="p-8">
+            <div class="bg-gray-100 p-6 rounded-[30px] mb-6">
+                <p class="text-[10px] font-black text-gray-400 uppercase">Solde du compte</p>
+                <p class="text-4xl font-black tracking-tighter">0,00 €</p>
             </div>
-            <button class="bg-black text-white w-full py-5 rounded-[20px] font-black text-xs uppercase tracking-widest">+ Effectuer un dépôt</button>
+            <div class="border p-5 rounded-3xl flex justify-between items-center">
+                <span class="text-xs font-bold">Vérification KYC</span>
+                <span class="text-[10px] bg-orange-100 text-orange-600 px-3 py-1 rounded-full font-black">EN EXAMEN</span>
+            </div>
         </div>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyD1Yhvo8ooS9nTb_RRP7Pswjqovj2T6ZOU",
       authDomain: "invest-avenir.firebaseapp.com",
-      databaseURL: "https://invest-avenir-default-rtdb.europe-west1.firebasedatabase.app",
       projectId: "invest-avenir",
       storageBucket: "invest-avenir.firebasestorage.app",
       messagingSenderId: "109431023120",
@@ -115,72 +104,80 @@
     const db = getFirestore(app);
     let confirmationResult;
 
+    const countries = [
+        {name: "Albanie", flag: "🇦🇱"}, {name: "Allemagne", flag: "🇩🇪"}, {name: "Andorre", flag: "🇦🇩"},
+        {name: "Autriche", flag: "AT"}, {name: "Belgique", flag: "🇧🇪"}, {name: "Biélorussie", flag: "🇧🇾"},
+        {name: "Bosnie-Herzégovine", flag: "🇧🇦"}, {name: "Bulgarie", flag: "🇧🇬"}, {name: "Chypre", flag: "🇨🇾"},
+        {name: "Croatie", flag: "🇭🇷"}, {name: "Danemark", flag: "🇩🇰"}, {name: "Espagne", flag: "🇪🇸"},
+        {name: "Estonie", flag: "🇪🇪"}, {name: "Finlande", flag: "🇫🇮"}, {name: "France", flag: "🇫🇷"},
+        {name: "Grèce", flag: "🇬🇷"}, {name: "Hongrie", flag: "🇭🇺"}, {name: "Irlande", flag: "🇮🇪"},
+        {name: "Islande", flag: "🇮🇸"}, {name: "Italie", flag: "🇮🇹"}, {name: "Lettonie", flag: "🇱🇻"},
+        {name: "Liechtenstein", flag: "🇱🇮"}, {name: "Lituanie", flag: "🇱🇹"}, {name: "Luxembourg", flag: "🇱🇺"},
+        {name: "Malte", flag: "🇲🇹"}, {name: "Moldavie", flag: "🇲🇩"}, {name: "Monaco", flag: "🇲🇨"},
+        {name: "Monténégro", flag: "🇲🇪"}, {name: "Norvège", flag: "🇳🇴"}, {name: "Pays-Bas", flag: "🇳🇱"},
+        {name: "Pologne", flag: "🇵🇱"}, {name: "Portugal", flag: "🇵🇹"}, {name: "République Tchèque", flag: "🇨🇿"},
+        {name: "Roumanie", flag: "🇷🇴"}, {name: "Royaume-Uni", flag: "🇬🇧"}, {name: "Serbie", flag: "🇷🇸"},
+        {name: "Slovaquie", flag: "🇸🇰"}, {name: "Slovénie", flag: "🇸🇮"}, {name: "Suède", flag: "🇸🇪"},
+        {name: "Suisse", flag: "🇨🇭"}, {name: "Ukraine", flag: "🇺🇦"}
+    ];
+
     window.goTo = (id) => {
         document.querySelectorAll('.step-page').forEach(p => p.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        window.scrollTo(0,0);
+        if(id === 'page-country') renderCountries();
     };
 
-    // SMS : Envoi
+    window.renderCountries = (filter = "") => {
+        const list = document.getElementById('country-list');
+        list.innerHTML = "";
+        countries.filter(c => c.name.toLowerCase().includes(filter.toLowerCase())).forEach(c => {
+            const div = document.createElement('div');
+            div.className = "country-item";
+            div.innerHTML = `<span class="mr-4 text-xl">${c.flag}</span> <span class="font-bold">${c.name}</span>`;
+            div.onclick = () => {
+                document.getElementById('selected-country').value = c.name;
+                goTo('page-address');
+            };
+            list.appendChild(div);
+        });
+    };
+
+    window.filterCountries = () => renderCountries(document.getElementById('country-search').value);
+
     window.sendSMS = async () => {
         const phone = document.getElementById('reg-phone').value;
-        const btn = document.getElementById('btn-sms');
-        if(!phone) return alert("Entrez votre numéro");
-        
-        btn.innerText = "CONNEXION AU SERVEUR...";
         const verifier = new RecaptchaVerifier(auth, 'recaptcha-container', { size: 'invisible' });
-        
         try {
             confirmationResult = await signInWithPhoneNumber(auth, phone, verifier);
-            goTo('step-verify');
-        } catch (e) { 
-            alert("Erreur SMS : " + e.message); 
-            btn.innerText = "RECEVOIR LE CODE"; 
-        }
+            goTo('page-verify');
+        } catch (e) { alert(e.message); }
     };
 
-    // SMS : Vérification
     window.verifySMS = async () => {
-        const code = document.getElementById('sms-code').value;
-        const btn = document.getElementById('btn-verify');
-        btn.innerText = "VÉRIFICATION...";
         try {
-            await confirmationResult.confirm(code);
-            goTo('step-info');
-        } catch (e) { 
-            alert("Code incorrect."); 
-            btn.innerText = "VÉRIFIER LE NUMÉRO";
-        }
+            await confirmationResult.confirm(document.getElementById('sms-code').value);
+            goTo('page-identity');
+        } catch (e) { alert("Code invalide"); }
     };
 
-    // FINALISATION : Enregistrement Firestore
-    window.handleRegister = async () => {
-        const btn = document.getElementById('btn-final');
-        const email = document.getElementById('reg-email').value;
-        const pass = document.getElementById('reg-pass').value;
-        const info = {
-            prenom: document.getElementById('reg-prenom').value,
+    window.finalRegister = async () => {
+        const btn = document.getElementById('btn-finish');
+        const user = auth.currentUser;
+        const data = {
             nom: document.getElementById('reg-nom').value,
+            prenom: document.getElementById('reg-prenom').value,
             dob: document.getElementById('reg-dob').value,
-            addr: document.getElementById('reg-addr').value,
+            pob: document.getElementById('reg-pob').value,
+            pays: document.getElementById('selected-country').value,
+            adresse: `${document.getElementById('reg-num-rue').value} ${document.getElementById('reg-nom-rue').value}, ${document.getElementById('reg-cp').value} ${document.getElementById('reg-ville').value}`,
             balance: "0,00"
         };
 
-        if(!info.prenom || !info.nom) return alert("Veuillez remplir vos informations");
-        btn.innerText = "SÉCURISATION DU COMPTE...";
-
         try {
-            const user = auth.currentUser;
-            // On lie l'email/password au compte déjà créé via SMS
-            // Ou on enregistre simplement les données dans Firestore sous l'UID du téléphone
-            await setDoc(doc(db, "users", user.uid), info);
-            
-            document.getElementById('display-name').innerText = info.prenom + " " + info.nom;
-            goTo('step-dashboard');
-        } catch (e) { 
-            alert(e.message); 
-            btn.innerText = "FINALISER MON DOSSIER";
-        }
+            await setDoc(doc(db, "users", user.uid), data);
+            document.getElementById('user-res').innerText = data.prenom + " " + data.nom;
+            goTo('page-dashboard');
+        } catch (e) { alert(e.message); }
     };
 </script>
 </body>

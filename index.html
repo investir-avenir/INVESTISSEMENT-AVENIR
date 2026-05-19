@@ -7,13 +7,13 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { background-color: #000; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; }
+        body { background-color: #000; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; overflow-x: hidden; }
         .gold-btn { background: linear-gradient(135deg, #d4af37 0%, #f1d592 100%); color: #000; font-weight: 800; }
         .step-page { display: none; min-h-screen; flex-direction: column; padding: 25px; animation: fadeIn 0.3s ease; }
         .active { display: flex; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
         input { background: #111!important; border: 1px solid #333!important; color: white!important; border-radius: 15px!important; padding: 18px!important; width: 100%; margin-bottom: 12px; outline: none; }
-        .country-item { display: flex; align-items: center; padding: 16px; border-bottom: 1px solid #222; cursor: pointer; transition: 0.2s; }
+        .country-item { display: flex; align-items: center; padding: 16px; border-bottom: 1px solid #222; cursor: pointer; }
         .country-item:hover { background: #111; }
     </style>
 </head>
@@ -27,23 +27,15 @@
     </div>
 
     <div id="page-phone" class="step-page">
-        <h2 class="text-2xl font-black mb-2">Votre numéro ?</h2>
-        <p class="text-gray-500 mb-8 text-sm">Pour sécuriser votre compte via SMS.</p>
-        <div id="recaptcha-container"></div>
+        <h2 class="text-2xl font-black mb-2 text-yellow-500">Votre numéro</h2>
+        <p class="text-gray-500 mb-8 text-sm">Saisissez votre numéro de mobile pour continuer.</p>
         <input type="tel" id="reg-phone" placeholder="+33 6 00 00 00 00">
-        <button onclick="sendSMS()" id="btn-sms" class="gold-btn w-full py-5 rounded-2xl mt-auto uppercase">Recevoir le code</button>
-    </div>
-
-    <div id="page-verify" class="step-page">
-        <h2 class="text-2xl font-black mb-2">Code de sécurité</h2>
-        <p class="text-gray-500 mb-8 text-sm">Saisissez le code reçu par SMS.</p>
-        <input type="text" id="sms-code" placeholder="000000" class="text-center tracking-[0.5em] text-xl font-bold">
-        <button onclick="verifySMS()" class="gold-btn w-full py-5 rounded-2xl mt-auto uppercase">Vérifier</button>
+        <button onclick="savePhoneAndNext()" class="gold-btn w-full py-5 rounded-2xl mt-auto uppercase">Continuer</button>
     </div>
 
     <div id="page-identity" class="step-page">
-        <h2 class="text-2xl font-black mb-6">Identité du titulaire</h2>
-        <input type="text" id="reg-nom" placeholder="Nom de famille">
+        <h2 class="text-2xl font-black mb-6 text-yellow-500">Parlez-nous de vous</h2>
+        <input type="text" id="reg-nom" placeholder="Nom">
         <input type="text" id="reg-prenom" placeholder="Prénom">
         <input type="date" id="reg-dob" placeholder="Date de naissance">
         <input type="text" id="reg-pob" placeholder="Lieu de naissance">
@@ -52,7 +44,7 @@
 
     <div id="page-country" class="step-page">
         <h2 class="text-2xl font-black mb-4 text-yellow-500">Pays de résidence</h2>
-        <input type="text" id="country-search" onkeyup="filterCountries()" placeholder="Chercher un pays européen...">
+        <input type="text" id="country-search" onkeyup="filterCountries()" placeholder="Rechercher mon pays...">
         <div id="country-list" class="overflow-y-auto max-h-[450px] bg-[#080808] rounded-2xl border border-white/5">
             </div>
         <input type="hidden" id="selected-country">
@@ -68,18 +60,18 @@
     </div>
 
     <div id="page-dashboard" class="step-page bg-white text-black !p-0">
-        <div class="p-8 bg-black text-white rounded-b-[45px] shadow-xl">
+        <div class="p-8 bg-black text-white rounded-b-[45px]">
             <h1 class="text-2xl font-black italic text-yellow-500">Investissement & Avenir</h1>
             <p class="mt-4 text-xs font-bold text-gray-500 uppercase">Bienvenue, <span id="user-res" class="text-white"></span></p>
         </div>
         <div class="p-8">
             <div class="bg-gray-100 p-6 rounded-[30px] mb-6">
-                <p class="text-[10px] font-black text-gray-400 uppercase">Solde du compte</p>
+                <p class="text-[10px] font-black text-gray-400 uppercase">Solde actuel</p>
                 <p class="text-4xl font-black tracking-tighter">0,00 €</p>
             </div>
             <div class="border p-5 rounded-3xl flex justify-between items-center">
-                <span class="text-xs font-bold">Vérification KYC</span>
-                <span class="text-[10px] bg-orange-100 text-orange-600 px-3 py-1 rounded-full font-black">EN EXAMEN</span>
+                <span class="text-xs font-bold">Vérification de sécurité</span>
+                <span class="text-[10px] bg-orange-100 text-orange-600 px-3 py-1 rounded-full font-black">EN ATTENTE</span>
             </div>
         </div>
     </div>
@@ -87,7 +79,6 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -100,31 +91,31 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
     const db = getFirestore(app);
-    let confirmationResult;
 
     const countries = [
-        {name: "Albanie", flag: "🇦🇱"}, {name: "Allemagne", flag: "🇩🇪"}, {name: "Andorre", flag: "🇦🇩"},
-        {name: "Autriche", flag: "🇦🇹"}, {name: "Belgique", flag: "🇧🇪"}, {name: "Biélorussie", flag: "🇧🇾"},
-        {name: "Bosnie-Herzégovine", flag: "🇧🇦"}, {name: "Bulgarie", flag: "🇧🇬"}, {name: "Chypre", flag: "🇨🇾"},
-        {name: "Croatie", flag: "🇭🇷"}, {name: "Danemark", flag: "🇩🇰"}, {name: "Espagne", flag: "🇪🇸"},
-        {name: "Estonie", flag: "🇪🇪"}, {name: "Finlande", flag: "🇫🇮"}, {name: "France", flag: "🇫🇷"},
-        {name: "Grèce", flag: "🇬🇷"}, {name: "Hongrie", flag: "🇭🇺"}, {name: "Irlande", flag: "🇮🇪"},
-        {name: "Islande", flag: "🇮🇸"}, {name: "Italie", flag: "🇮🇹"}, {name: "Lettonie", flag: "🇱🇻"},
-        {name: "Liechtenstein", flag: "🇱🇮"}, {name: "Lituanie", flag: "🇱🇹"}, {name: "Luxembourg", flag: "🇱🇺"},
-        {name: "Malte", flag: "🇲🇹"}, {name: "Moldavie", flag: "🇲🇩"}, {name: "Monaco", flag: "🇲🇨"},
-        {name: "Monténégro", flag: "🇲🇪"}, {name: "Norvège", flag: "🇳🇴"}, {name: "Pays-Bas", flag: "🇳🇱"},
-        {name: "Pologne", flag: "🇵🇱"}, {name: "Portugal", flag: "🇵🇹"}, {name: "République Tchèque", flag: "🇨🇿"},
-        {name: "Roumanie", flag: "🇷🇴"}, {name: "Royaume-Uni", flag: "🇬🇧"}, {name: "Serbie", flag: "🇷🇸"},
-        {name: "Slovaquie", flag: "🇸🇰"}, {name: "Slovénie", flag: "🇸🇮"}, {name: "Suède", flag: "🇸🇪"},
-        {name: "Suisse", flag: "🇨🇭"}, {name: "Ukraine", flag: "🇺🇦"}
+        {name: "Allemagne", flag: "🇩🇪"}, {name: "Autriche", flag: "🇦🇹"}, {name: "Belgique", flag: "🇧🇪"}, 
+        {name: "Bulgarie", flag: "🇧🇬"}, {name: "Chypre", flag: "🇨🇾"}, {name: "Croatie", flag: "🇭🇷"}, 
+        {name: "Danemark", flag: "🇩🇰"}, {name: "Espagne", flag: "🇪🇸"}, {name: "Estonie", flag: "🇪🇪"}, 
+        {name: "Finlande", flag: "🇫🇮"}, {name: "France", flag: "🇫🇷"}, {name: "Grèce", flag: "🇬🇷"}, 
+        {name: "Hongrie", flag: "🇭🇺"}, {name: "Irlande", flag: "🇮🇪"}, {name: "Italie", flag: "🇮🇹"}, 
+        {name: "Luxembourg", flag: "🇱🇺"}, {name: "Malte", flag: "🇲🇹"}, {name: "Pays-Bas", flag: "🇳🇱"}, 
+        {name: "Pologne", flag: "🇵🇱"}, {name: "Portugal", flag: "🇵🇹"}, {name: "Roumanie", flag: "🇷🇴"}, 
+        {name: "Royaume-Uni", flag: "🇬🇧"}, {name: "Slovaquie", flag: "🇸🇰"}, {name: "Slovénie", flag: "🇸🇮"}, 
+        {name: "Suède", flag: "🇸🇪"}, {name: "Suisse", flag: "🇨🇭"}
     ];
 
     window.goTo = (id) => {
         document.querySelectorAll('.step-page').forEach(p => p.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         if(id === 'page-country') renderCountries();
+    };
+
+    window.savePhoneAndNext = () => {
+        const phone = document.getElementById('reg-phone').value;
+        if(!phone) return alert("Veuillez entrer un numéro");
+        window.tempPhone = phone;
+        goTo('page-identity');
     };
 
     window.renderCountries = (filter = "") => {
@@ -144,55 +135,30 @@
 
     window.filterCountries = () => renderCountries(document.getElementById('country-search').value);
 
-    // CORRECTIF RECAPTCHA ICI
-    window.sendSMS = async () => {
-        const phone = document.getElementById('reg-phone').value;
-        const btn = document.getElementById('btn-sms');
-        
-        if(!phone) return alert("Entrez votre numéro");
-
-        if (!window.recaptchaVerifier) {
-            window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 
-                size: 'invisible' 
-            });
-        }
-        
-        btn.innerText = "ENVOI EN COURS...";
-        try {
-            confirmationResult = await signInWithPhoneNumber(auth, phone, window.recaptchaVerifier);
-            goTo('page-verify');
-        } catch (e) { 
-            console.error(e);
-            alert("Erreur : " + e.message);
-            btn.innerText = "RECEVOIR LE CODE"; 
-        }
-    };
-
-    window.verifySMS = async () => {
-        try {
-            await confirmationResult.confirm(document.getElementById('sms-code').value);
-            goTo('page-identity');
-        } catch (e) { alert("Code invalide"); }
-    };
-
     window.finalRegister = async () => {
         const btn = document.getElementById('btn-finish');
-        const user = auth.currentUser;
+        btn.innerText = "CRÉATION EN COURS...";
+        
         const data = {
+            tel: window.tempPhone,
             nom: document.getElementById('reg-nom').value,
             prenom: document.getElementById('reg-prenom').value,
             dob: document.getElementById('reg-dob').value,
             pob: document.getElementById('reg-pob').value,
             pays: document.getElementById('selected-country').value,
-            adresse: `${document.getElementById('reg-num-rue').value} ${document.getElementById('reg-nom-rue').value}, ${document.getElementById('reg-cp').value} ${document.getElementById('reg-ville').value}`,
+            adresse_complete: `${document.getElementById('reg-num-rue').value} ${document.getElementById('reg-nom-rue').value}, ${document.getElementById('reg-ville').value} (${document.getElementById('reg-cp').value})`,
             balance: "0,00"
         };
 
         try {
-            await setDoc(doc(db, "users", user.uid), data);
+            const fakeId = "user_" + Date.now();
+            await setDoc(doc(db, "users", fakeId), data);
             document.getElementById('user-res').innerText = data.prenom + " " + data.nom;
             goTo('page-dashboard');
-        } catch (e) { alert(e.message); }
+        } catch (e) {
+            alert("Erreur base de données : " + e.message);
+            btn.innerText = "CONFIRMER L'INSCRIPTION";
+        }
     };
 </script>
 </body>

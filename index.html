@@ -12,250 +12,210 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
     <style>
-        html, body { height: 100%; margin: 0; overflow-x: hidden; background-color: #000; font-family: 'Inter', sans-serif; color: white; }
-        .step-page { display: none; min-height: 100vh; width: 100vw; flex-direction: column; padding: 20px; }
+        html, body { height: 100%; margin: 0; background-color: #000; font-family: 'Inter', sans-serif; color: white; overflow-x: hidden; }
+        .step-page { display: none; min-height: 100vh; width: 100vw; flex-direction: column; padding: 25px; }
         .active { display: flex; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-size: 10px; text-transform: uppercase; color: #d4af37; font-weight: 800; margin-bottom: 6px; letter-spacing: 1px; }
+        input, select { background: #111!important; border: 1px solid #222!important; color: #fff!important; border-radius: 12px; padding: 16px; width: 100%; outline: none; font-size: 15px; }
+        .gold-btn { background: linear-gradient(135deg, #d4af37 0%, #f1d592 100%); color: #000; font-weight: 900; padding: 18px; border-radius: 15px; text-transform: uppercase; font-size: 12px; width: 100%; margin-top: 10px; }
+        #page-dashboard { background: #f8fafc; color: #000; overflow-y: auto; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 5000; align-items: center; justify-content: center; padding: 20px; }
         
-        /* Formulaire Style */
-        .input-group { margin-bottom: 20px; width: 100%; }
-        label { display: block; font-size: 10px; text-transform: uppercase; color: #d4af37; font-weight: 800; margin-bottom: 8px; letter-spacing: 1px; }
-        input, select { background: #111!important; border: 1px solid #222!important; color: #fff!important; border-radius: 15px; padding: 18px; width: 100%; outline: none; font-size: 16px; transition: 0.3s; }
-        input:focus { border-color: #d4af37!important; }
-        
-        .gold-btn { background: linear-gradient(135deg, #d4af37 0%, #f1d592 100%); color: #000; font-weight: 900; padding: 20px; border-radius: 18px; text-transform: uppercase; font-size: 12px; width: 100%; letter-spacing: 1px; margin-top: 10px; }
-        
-        .legal-box { background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 20px; padding: 20px; height: 300px; overflow-y: auto; font-size: 12px; color: #999; line-height: 1.6; }
-        
-        #page-dashboard { background: #f4f7f9; color: #000; overflow-y: auto; }
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 3000; align-items: center; justify-content: center; padding: 20px; }
-        
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: #d4af37; border-radius: 10px; }
+        /* Barre de chargement animée */
+        .loader-bar-container { width: 100%; height: 6px; background: #222; border-radius: 10px; overflow: hidden; margin-top: 20px; }
+        .loader-progress { width: 0%; height: 100%; background: #d4af37; transition: width 15s linear; }
     </style>
 </head>
 <body>
 
 <div id="app">
     <div id="page-choice" class="step-page active justify-center">
-        <div class="text-center mb-12">
-            <div class="w-24 h-24 bg-yellow-500 rounded-[30px] flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-yellow-500/20">
-                <i class="fa-solid fa-vault text-black text-5xl"></i>
+        <div class="text-center mb-10">
+            <div class="w-20 h-20 bg-yellow-500 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl">
+                <i class="fa-solid fa-vault text-black text-4xl"></i>
             </div>
-            <h1 class="text-4xl font-black italic">I&A <span class="text-yellow-500">EUROPE</span></h1>
-            <p class="text-gray-500 text-xs mt-4 tracking-[4px] uppercase">Gestion de Patrimoine Privé</p>
+            <h1 class="text-3xl font-black italic">I&A <span class="text-yellow-500">EUROPE</span></h1>
         </div>
-        <div class="space-y-4 px-4">
+        <div class="space-y-4 px-2">
             <button onclick="goTo('page-step1')" class="gold-btn">Ouvrir un compte</button>
-            <button onclick="showLogin()" class="w-full py-5 text-[11px] font-bold text-white/50 border border-white/10 rounded-2xl uppercase tracking-widest">Déjà client ? Se connecter</button>
+            <button onclick="goTo('page-login')" class="w-full py-5 text-[10px] font-bold text-white/40 border border-white/10 rounded-2xl uppercase tracking-widest">Se connecter</button>
+        </div>
+    </div>
+
+    <div id="page-login" class="step-page">
+        <div class="flex-grow flex flex-col justify-center">
+            <h1 class="text-2xl font-black mb-6">Connexion Client</h1>
+            <div class="input-group"><label>Email</label><input type="email" id="login-email" placeholder="votre@email.com"></div>
+            <div class="input-group"><label>Mot de passe</label><input type="password" id="login-pass" placeholder="••••••••"></div>
+        </div>
+        <div class="space-y-3">
+            <button onclick="processLogin()" class="gold-btn">Accéder au coffre</button>
+            <button onclick="goTo('page-choice')" class="w-full py-4 text-[10px] text-gray-500 uppercase font-bold">Retour</button>
         </div>
     </div>
 
     <div id="page-step1" class="step-page">
         <div class="flex-grow flex flex-col justify-center">
-            <h1 class="text-3xl font-black mb-8">Votre mobile</h1>
+            <h1 class="text-2xl font-black mb-6">Votre Mobile</h1>
             <div class="input-group">
-                <label>Pays & Indicatif</label>
+                <label>Indicatif Pays</label>
                 <select id="reg-prefix">
                     <option value="+33">🇫🇷 France (+33)</option>
                     <option value="+32">🇧🇪 Belgique (+32)</option>
                     <option value="+41">🇨🇭 Suisse (+41)</option>
-                    <option value="+34">🇪🇸 Espagne (+34)</option>
-                    <option value="+39">🇮🇹 Italie (+39)</option>
-                    <option value="+49">🇩🇪 Allemagne (+49)</option>
                     <option value="+352">🇱🇺 Luxembourg (+352)</option>
+                    <option value="+49">🇩🇪 Allemagne (+49)</option>
+                    <option value="+39">🇮🇹 Italie (+39)</option>
+                    <option value="+34">🇪🇸 Espagne (+34)</option>
                     <option value="+351">🇵🇹 Portugal (+351)</option>
+                    <option value="+31">🇳🇱 Pays-Bas (+31)</option>
+                    <option value="+43">🇦🇹 Autriche (+43)</option>
                     <option value="+377">🇲🇨 Monaco (+377)</option>
                 </select>
             </div>
-            <div class="input-group">
-                <label>Numéro de téléphone</label>
-                <input type="tel" id="reg-phone" placeholder="06 00 00 00 00">
-            </div>
+            <div class="input-group"><label>Numéro</label><input type="tel" id="reg-phone" placeholder="06 12 34 56 78"></div>
         </div>
         <button onclick="goTo('page-step2')" class="gold-btn">Suivant</button>
     </div>
 
     <div id="page-step2" class="step-page">
         <div class="flex-grow flex flex-col justify-center">
-            <h1 class="text-3xl font-black mb-8">Création d'accès</h1>
-            <div class="input-group">
-                <label>Adresse e-mail professionnelle</label>
-                <input type="email" id="reg-email" placeholder="exemple@mail.com">
-            </div>
-            <div class="input-group">
-                <label>Définir un mot de passe</label>
-                <input type="password" id="reg-pass" placeholder="••••••••">
-            </div>
+            <h1 class="text-2xl font-black mb-6">Accès Sécurisé</h1>
+            <div class="input-group"><label>E-mail</label><input type="email" id="reg-email" placeholder="votre@email.com"></div>
+            <div class="input-group"><label>Mot de passe</label><input type="password" id="reg-pass" placeholder="Minimum 6 caractères"></div>
         </div>
         <button onclick="goTo('page-step3')" class="gold-btn">Suivant</button>
     </div>
 
     <div id="page-step3" class="step-page">
-        <div class="flex-grow flex flex-col justify-center py-10">
-            <h1 class="text-3xl font-black mb-8">Identité</h1>
+        <div class="flex-grow overflow-y-auto py-10">
+            <h1 class="text-2xl font-black mb-6">Identité</h1>
+            <div class="input-group"><label>Civilité</label><select id="reg-sexe"><option>Monsieur</option><option>Madame</option></select></div>
+            <div class="input-group"><label>Nom</label><input type="text" id="reg-lname" placeholder="NOM"></div>
+            <div class="input-group"><label>Prénom</label><input type="text" id="reg-fname" placeholder="Prénom"></div>
+            <div class="input-group"><label>Date de Naissance</label><input type="text" id="reg-dob" placeholder="JJ/MM/AAAA"></div>
             <div class="input-group">
-                <label>Sexe / Civilité</label>
-                <select id="reg-sexe"><option>Monsieur</option><option>Madame</option></select>
-            </div>
-            <div class="input-group">
-                <label>Nom de famille</label>
-                <input type="text" id="reg-lname" placeholder="NOM">
-            </div>
-            <div class="input-group">
-                <label>Prénom</label>
-                <input type="text" id="reg-fname" placeholder="Prénom">
-            </div>
-            <div class="input-group">
-                <label>Date de naissance</label>
-                <input type="text" id="reg-dob" placeholder="JJ / MM / AAAA">
-            </div>
-            <div class="input-group">
-                <label>Nationalité</label>
+                <label>Nationalité Européenne</label>
                 <select id="reg-nat">
-                    <option>Française</option><option>Belge</option><option>Suisse</option>
-                    <option>Luxembourgeoise</option><option>Italienne</option><option>Espagnole</option>
+                    <option>Française</option><option>Belge</option><option>Suisse</option><option>Luxembourgeoise</option>
+                    <option>Allemande</option><option>Italienne</option><option>Espagnole</option><option>Portugaise</option>
+                    <option>Néerlandaise</option><option>Autrichienne</option><option>Monégasque</option><option>Irlandaise</option>
                 </select>
             </div>
-            <div class="input-group">
-                <label>Lieu de naissance</label>
-                <input type="text" id="reg-birthplace" placeholder="Ville de naissance">
-            </div>
+            <div class="input-group"><label>Lieu de naissance</label><input type="text" id="reg-birthplace" placeholder="Ville"></div>
         </div>
         <button onclick="goTo('page-step4')" class="gold-btn">Suivant</button>
     </div>
 
     <div id="page-step4" class="step-page">
         <div class="flex-grow flex flex-col justify-center">
-            <h1 class="text-3xl font-black mb-8">Domiciliation</h1>
+            <h1 class="text-2xl font-black mb-6">Résidence</h1>
             <div class="input-group">
                 <label>Pays de résidence</label>
-                <select id="reg-country">
-                    <option>France</option><option>Belgique</option><option>Suisse</option>
-                    <option>Luxembourg</option><option>Monaco</option>
+                <select id="reg-residence">
+                    <option>France</option><option>Belgique</option><option>Suisse</option><option>Luxembourg</option>
+                    <option>Allemagne</option><option>Italie</option><option>Espagne</option><option>Portugal</option>
+                    <option>Pays-Bas</option><option>Monaco</option>
                 </select>
             </div>
-            <div class="input-group">
-                <label>Numéro de rue</label>
-                <input type="text" id="reg-addr-num" placeholder="Ex: 12">
-            </div>
-            <div class="input-group">
-                <label>Nom de la rue</label>
-                <input type="text" id="reg-addr-street" placeholder="Ex: Avenue des Champs-Élysées">
-            </div>
-            <div class="input-group">
-                <label>Code Postal</label>
-                <input type="text" id="reg-addr-cp" placeholder="Ex: 75008">
-            </div>
-            <div class="input-group">
-                <label>Ville</label>
-                <input type="text" id="reg-addr-city" placeholder="Ex: Paris">
-            </div>
+            <div class="input-group"><label>N° de rue</label><input type="text" id="reg-addr-num"></div>
+            <div class="input-group"><label>Nom de rue</label><input type="text" id="reg-addr-street"></div>
+            <div class="input-group"><label>Code Postal</label><input type="text" id="reg-addr-cp"></div>
+            <div class="input-group"><label>Ville</label><input type="text" id="reg-addr-city"></div>
         </div>
         <button onclick="goTo('page-step5')" class="gold-btn">Suivant</button>
     </div>
 
     <div id="page-step5" class="step-page">
         <div class="flex-grow flex flex-col justify-center">
-            <h1 class="text-3xl font-black mb-6">Contrat Légal</h1>
-            <div class="legal-box">
-                <strong>POLITIQUE DE CONFIDENTIALITÉ & CGU</strong><br><br>
-                En ouvrant un compte chez Investissement & Avenir Europe, vous acceptez les conditions suivantes :<br><br>
-                1. Vos données sont protégées par le RGPD européen.<br>
-                2. Les fonds déposés sont garantis à hauteur de 100 000€ par nos partenaires.<br>
-                3. L'investissement comporte des risques de perte en capital.<br>
-                4. Vous certifiez l'exactitude des informations fournies.
+            <h1 class="text-2xl font-black mb-6">Légal</h1>
+            <div class="bg-zinc-900 p-5 rounded-2xl text-[11px] text-gray-400 h-64 overflow-y-auto leading-relaxed border border-zinc-800">
+                <strong class="text-yellow-600 uppercase">Protection des données</strong><br>
+                Conformément au RGPD, vos informations sont cryptées...<br><br>
+                <strong class="text-yellow-600 uppercase">Garantie des fonds</strong><br>
+                Les dépôts sont sécurisés par le fonds de garantie européen...
             </div>
-            <div class="mt-8 flex items-center gap-4 bg-zinc-900 p-5 rounded-2xl">
-                <input type="checkbox" id="privacy-check" style="width:25px; height:25px; margin:0">
-                <label class="m-0 text-[11px]">J'accepte les conditions générales</label>
+            <div class="mt-6 flex items-center gap-3 bg-zinc-900 p-4 rounded-xl border border-zinc-800">
+                <input type="checkbox" id="privacy-check" style="width:22px; height:22px">
+                <label class="m-0 text-[10px]">J'accepte la politique de confidentialité</label>
             </div>
         </div>
-        <button onclick="registerUser()" class="gold-btn">Créer mon compte</button>
+        <button onclick="processRegister()" class="gold-btn">Créer mon compte Europe</button>
     </div>
 
     <div id="page-loading" class="step-page justify-center items-center text-center">
-        <div class="w-20 h-20 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin mb-10"></div>
-        <h2 class="text-xl font-bold uppercase tracking-widest text-yellow-500">Création du compte...</h2>
-        <p class="text-gray-500 text-sm mt-4">Sécurisation de votre coffre-fort bancaire</p>
+        <div class="w-16 h-16 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin mb-6"></div>
+        <h2 class="text-xl font-bold text-yellow-500 uppercase italic">Vérification de sécurité...</h2>
+        <p class="text-gray-500 text-xs mt-2 uppercase tracking-widest">Création de votre coffre-fort</p>
+        <div class="loader-bar-container"><div id="progress-bar" class="loader-progress"></div></div>
     </div>
 
     <div id="page-dashboard" class="step-page p-0">
-        <div class="p-6 flex justify-between items-center bg-white border-b sticky top-0 z-50">
-            <span class="font-black italic text-xl">I&A <span class="text-yellow-600">EUROPE</span></span>
-            <div onclick="showProfile()" class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center border text-slate-400">
-                <i class="fa-solid fa-user"></i>
-            </div>
+        <div class="p-5 flex justify-between items-center bg-white border-b sticky top-0 z-50">
+            <span class="font-black italic text-lg">I&A <span class="text-yellow-600">EUROPE</span></span>
+            <div onclick="showProfile()" class="w-9 h-9 bg-slate-100 rounded-full flex items-center justify-center border text-slate-400"><i class="fa-solid fa-user"></i></div>
         </div>
-
         <div class="p-6">
-            <div class="bg-slate-900 rounded-[40px] p-8 text-white shadow-2xl mb-8">
-                <p class="text-[10px] uppercase text-slate-500 font-bold tracking-widest">Solde Total</p>
-                <h2 class="text-5xl font-black mt-2">0,00 €</h2>
-                <div class="flex gap-3 mt-10">
-                    <button onclick="showRecharge()" class="bg-white text-black font-black py-4 rounded-xl flex-1 text-[11px] uppercase">Recharger</button>
-                    <button onclick="alertInsufficient()" class="bg-slate-800 text-slate-400 font-black py-4 rounded-xl flex-1 text-[11px] uppercase">Retrait</button>
+            <div class="bg-slate-900 rounded-[35px] p-8 text-white shadow-xl mb-8">
+                <p class="text-[9px] uppercase text-slate-500 font-bold tracking-widest">Portefeuille Actif</p>
+                <h2 class="text-4xl font-black mt-2">0,00 €</h2>
+                <div class="flex gap-3 mt-8">
+                    <button onclick="showModal('modal-recharge')" class="bg-white text-black font-black py-4 rounded-xl flex-1 text-[10px] uppercase">Déposer</button>
+                    <button onclick="alertError()" class="bg-slate-800 text-slate-500 font-black py-4 rounded-xl flex-1 text-[10px] uppercase">Retrait</button>
                 </div>
             </div>
-
-            <h3 class="font-black text-sm uppercase mb-6 flex justify-between items-center">
-                Opportunités actives <span class="text-[10px] text-yellow-600">300 PROJETS</span>
-            </h3>
-            
-            <div id="dash-projects" class="space-y-4 pb-32">
-                </div>
+            <h3 class="font-black text-xs uppercase mb-6 text-slate-400">Opportunités (300)</h3>
+            <div id="dash-projects" class="space-y-3 pb-24"></div>
         </div>
-
-        <div class="fixed bottom-0 w-full bg-white border-t flex justify-around p-6 z-50">
-            <i class="fa-solid fa-house text-yellow-600 text-xl"></i>
-            <i onclick="showModal('modal-help')" class="fa-solid fa-headset text-slate-300 text-xl"></i>
-            <i onclick="showRecharge()" class="fa-solid fa-wallet text-slate-300 text-xl"></i>
+        <div class="fixed bottom-0 w-full bg-white border-t flex justify-around p-5 z-50">
+            <i class="fa-solid fa-house text-yellow-600 text-lg"></i>
+            <i onclick="showModal('modal-help')" class="fa-solid fa-headset text-slate-300 text-lg"></i>
         </div>
     </div>
 
     <div id="modal-profile" class="modal">
-        <div class="bg-white rounded-[40px] p-10 w-full max-w-sm text-black relative">
-            <h2 class="font-black text-2xl text-center mb-8 uppercase italic">Mon Profil</h2>
-            <div class="space-y-6">
-                <div class="border-b pb-2"><p class="text-[9px] text-slate-400 font-bold">NOM COMPLET</p><p id="prof-name" class="font-bold">-</p></div>
-                <div class="border-b pb-2"><p class="text-[9px] text-slate-400 font-bold">EMAIL</p><p id="prof-email" class="font-bold">-</p></div>
-                <div class="border-b pb-2"><p class="text-[9px] text-slate-400 font-bold">TÉLÉPHONE</p><p id="prof-phone" class="font-bold">-</p></div>
-                <div class="border-b pb-2"><p class="text-[9px] text-slate-400 font-bold">ADRESSE</p><p id="prof-addr" class="font-bold">-</p></div>
+        <div class="bg-white rounded-[35px] p-8 w-full max-w-sm text-black relative">
+            <h2 class="font-black text-xl text-center mb-6 uppercase italic">Mon Profil</h2>
+            <div class="space-y-4 text-sm">
+                <div class="border-b pb-2"><p class="text-[9px] text-slate-400 font-bold uppercase">Titulaire</p><p id="prof-name" class="font-bold">-</p></div>
+                <div class="border-b pb-2"><p class="text-[9px] text-slate-400 font-bold uppercase">Email</p><p id="prof-email" class="font-bold">-</p></div>
+                <div class="border-b pb-2"><p class="text-[9px] text-slate-400 font-bold uppercase">Nationalité</p><p id="prof-nat" class="font-bold">-</p></div>
+                <div class="border-b pb-2"><p class="text-[9px] text-slate-400 font-bold uppercase">Résidence</p><p id="prof-addr" class="font-bold">-</p></div>
             </div>
-            <button onclick="hideModal('modal-profile')" class="gold-btn mt-10">Fermer</button>
+            <button onclick="hideModal('modal-profile')" class="gold-btn mt-8">Fermer</button>
         </div>
     </div>
 
     <div id="modal-recharge" class="modal">
-        <div class="bg-white rounded-[40px] p-8 w-full max-w-sm text-black">
-            <h2 class="font-black text-xl mb-6">RECHARGER MON COMPTE</h2>
-            <div class="space-y-4">
-                <div class="p-4 bg-slate-50 rounded-2xl border border-dashed border-slate-300">
-                    <p class="text-[10px] text-slate-400 font-bold mb-2">COORDONNÉES DE DÉPÔT</p>
-                    <p class="text-xs"><strong>Bénéficiaire :</strong> <span id="iban-name">INVEST & AVENIR</span></p>
-                    <p class="text-xs mt-2"><strong>IBAN :</strong> FR76 3000 6000 0123 4567 8901 234</p>
-                    <p class="text-xs mt-1"><strong>BIC :</strong> MPAYFRP1XXX</p>
-                </div>
-                <button onclick="alert('Veuillez effectuer le virement depuis votre application bancaire.')" class="w-full py-4 bg-slate-900 text-white rounded-xl text-[10px] font-bold uppercase">Virement Instantané</button>
-                <button onclick="alert('Veuillez effectuer le virement depuis votre application bancaire.')" class="w-full py-4 border border-slate-200 rounded-xl text-[10px] font-bold uppercase">Virement Classique</button>
+        <div class="bg-white rounded-[35px] p-8 w-full max-w-sm text-black">
+            <h2 class="font-black text-lg mb-6 uppercase">Virement Bancaire</h2>
+            <div class="p-5 bg-slate-50 rounded-2xl border border-dashed border-slate-300 space-y-3">
+                <div><p class="text-[9px] text-slate-400 font-bold uppercase">Bénéficiaire</p><p class="font-bold text-sm uppercase" id="iban-name">-</p></div>
+                <div><p class="text-[9px] text-slate-400 font-bold uppercase">IBAN (SEPA Europe)</p><p class="font-mono text-xs font-bold">FR76 3000 6000 0123 4567 8901 234</p></div>
+                <div><p class="text-[9px] text-slate-400 font-bold uppercase">Code BIC / SWIFT</p><p class="font-mono text-xs font-bold">MPAYFRP1XXX</p></div>
             </div>
-            <button onclick="hideModal('modal-recharge')" class="w-full mt-4 text-[10px] uppercase font-bold text-slate-400">Retour</button>
+            <div class="mt-6 space-y-3">
+                <button onclick="alert('Veuillez initier le virement depuis votre banque.')" class="w-full py-4 bg-black text-white rounded-xl text-[10px] font-bold uppercase">Virement Instantané</button>
+                <button onclick="alert('Veuillez initier le virement depuis votre banque.')" class="w-full py-4 border border-slate-200 rounded-xl text-[10px] font-bold uppercase text-slate-400">Virement Classique</button>
+            </div>
+            <button onclick="hideModal('modal-recharge')" class="w-full mt-4 text-[9px] uppercase font-bold text-slate-300">Annuler</button>
         </div>
     </div>
 
     <div id="modal-help" class="modal">
-        <div class="bg-white rounded-[40px] p-10 w-full max-w-sm text-black text-center">
-            <i class="fa-solid fa-headset text-5xl text-yellow-500 mb-6"></i>
-            <h2 class="font-black text-xl mb-2">SERVICE CLIENT</h2>
-            <p class="text-slate-400 text-sm mb-8">Une question ? Nos conseillers vous répondent en direct sur WhatsApp.</p>
-            <button onclick="window.location.href='https://wa.me/33756966407'" class="gold-btn mb-4">Contacter par WhatsApp</button>
-            <button onclick="hideModal('modal-help')" class="w-full text-[10px] font-bold text-slate-300 uppercase">Fermer</button>
+        <div class="bg-white rounded-[35px] p-8 w-full max-w-sm text-black text-center">
+            <i class="fa-solid fa-headset text-4xl text-yellow-500 mb-4"></i>
+            <h2 class="font-black text-lg mb-2">ASSISTANCE</h2>
+            <p class="text-slate-400 text-xs mb-6">Un conseiller privé est disponible pour vous accompagner dans vos investissements.</p>
+            <button onclick="window.location.href='https://wa.me/33756966407'" class="gold-btn">Ouvrir WhatsApp</button>
+            <button onclick="hideModal('modal-help')" class="w-full mt-4 text-[9px] font-bold text-slate-300 uppercase">Fermer</button>
         </div>
     </div>
 </div>
 
 <script>
-    // --- FIREBASE CONFIG ---
+    // CONFIGURATION FIREBASE
     const firebaseConfig = {
         apiKey: "AIzaSyD1Yhvo8ooS9nTb_RRP7Pswjqovj2T6ZOU",
         authDomain: "invest-avenir.firebaseapp.com",
@@ -269,82 +229,75 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // NAVIGATION
     function goTo(id) {
         document.querySelectorAll('.step-page').forEach(p => p.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         window.scrollTo(0,0);
     }
 
-    // CONNEXION
-    function showLogin() {
-        const email = prompt("Votre Email :");
-        const pass = prompt("Votre Mot de passe :");
-        if(email && pass) {
-            auth.signInWithEmailAndPassword(email, pass)
-                .then(() => { setupDash(); goTo('page-dashboard'); })
-                .catch(err => { alert("Identifiants incorrects."); });
-        }
+    // GESTION CONNEXION
+    function processLogin() {
+        const email = document.getElementById('login-email').value;
+        const pass = document.getElementById('login-pass').value;
+        if(!email || !pass) return alert("Remplissez les champs.");
+        
+        auth.signInWithEmailAndPassword(email, pass)
+            .then(() => { setupDash(); goTo('page-dashboard'); })
+            .catch(err => alert("Erreur : " + err.message));
     }
 
-    // INSCRIPTION
-    function registerUser() {
+    // GESTION INSCRIPTION
+    function processRegister() {
         if(!document.getElementById('privacy-check').checked) return alert("Veuillez accepter les conditions.");
         
         const email = document.getElementById('reg-email').value;
         const pass = document.getElementById('reg-pass').value;
 
         goTo('page-loading');
-        
+        document.getElementById('progress-bar').style.width = '100%';
+
         auth.createUserWithEmailAndPassword(email, pass)
-            .then((res) => {
-                const userData = {
-                    fullName: document.getElementById('reg-fname').value + " " + document.getElementById('reg-lname').value,
+            .then((user) => {
+                const info = {
+                    name: document.getElementById('reg-fname').value + " " + document.getElementById('reg-lname').value,
                     email: email,
                     phone: document.getElementById('reg-prefix').value + document.getElementById('reg-phone').value,
-                    address: document.getElementById('reg-addr-num').value + " " + document.getElementById('reg-addr-street').value + ", " + document.getElementById('reg-addr-cp').value + " " + document.getElementById('reg-addr-city').value
+                    nat: document.getElementById('reg-nat').value,
+                    addr: document.getElementById('reg-addr-num').value + " " + document.getElementById('reg-addr-street').value + ", " + document.getElementById('reg-addr-city').value,
+                    solde: 0
                 };
-                db.collection("users").doc(res.user.uid).set(userData);
+                db.collection("users").doc(user.user.uid).set(info);
                 
                 setTimeout(() => { setupDash(); goTo('page-dashboard'); }, 15000);
             })
             .catch(err => { alert(err.message); goTo('page-choice'); });
     }
 
-    // DASHBOARD CONFIG
     function setupDash() {
         let html = '';
         for(let i=1; i<=300; i++) {
             html += `
-            <div class="bg-white border rounded-3xl p-6 flex justify-between items-center shadow-sm" onclick="alertInsufficient()">
-                <div>
-                    <p class="font-black text-sm text-slate-800 tracking-tight">Projet Immobilier #${1000+i}</p>
-                    <p class="text-[9px] text-slate-400 uppercase font-bold tracking-widest">Rendement Annuel</p>
-                </div>
-                <span class="text-green-600 font-black text-sm">+${(Math.random() * 5 + 7).toFixed(1)}%</span>
+            <div class="bg-white border rounded-2xl p-5 flex justify-between items-center shadow-sm" onclick="alertError()">
+                <div><p class="font-black text-xs text-slate-800">Projet Immo #${1000+i}</p><p class="text-[8px] text-slate-400 font-bold uppercase">Europe - Dividendes Mensuels</p></div>
+                <span class="text-green-600 font-black text-xs">+${(Math.random() * 4 + 8).toFixed(1)}%</span>
             </div>`;
         }
         document.getElementById('dash-projects').innerHTML = html;
     }
 
     function showProfile() {
-        const uid = auth.currentUser.uid;
-        db.collection("users").doc(uid).get().then(doc => {
-            const data = doc.data();
-            document.getElementById('prof-name').innerText = data.fullName;
-            document.getElementById('prof-email').innerText = data.email;
-            document.getElementById('prof-phone').innerText = data.phone;
-            document.getElementById('prof-addr').innerText = data.address;
-            document.getElementById('iban-name').innerText = data.fullName.toUpperCase();
+        db.collection("users").doc(auth.currentUser.uid).get().then(doc => {
+            const d = doc.data();
+            document.getElementById('prof-name').innerText = d.name;
+            document.getElementById('prof-email').innerText = d.email;
+            document.getElementById('prof-nat').innerText = d.nat;
+            document.getElementById('prof-addr').innerText = d.addr;
+            document.getElementById('iban-name').innerText = d.name;
             showModal('modal-profile');
         });
     }
 
-    function alertInsufficient() {
-        alert("Votre solde est insuffisant. Veuillez recharger votre compte pour commencer à investir.");
-    }
-
-    function showRecharge() { showModal('modal-recharge'); }
+    function alertError() { alert("Votre solde est insuffisant. Veuillez recharger pour continuer."); }
     function showModal(id) { document.getElementById(id).style.display = 'flex'; }
     function hideModal(id) { document.getElementById(id).style.display = 'none'; }
 </script>

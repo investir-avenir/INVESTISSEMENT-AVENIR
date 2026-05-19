@@ -7,25 +7,22 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { background-color: #000; color: #fff; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; margin: 0; }
+        body { background-color: #000; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; }
         .gold-btn { background: linear-gradient(135deg, #d4af37 0%, #f1d592 100%); color: #000; font-weight: 800; }
         .step-page { display: none; min-height: 100vh; flex-direction: column; padding: 30px; animation: slideIn 0.3s ease-out; }
         .active { display: flex; }
         @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
         
-        input, select { background: #111!important; border: 1px solid #333!important; color: white!important; border-radius: 18px!important; padding: 20px!important; width: 100%; margin-bottom: 15px; outline: none; font-size: 16px; }
-        .pass-container { position: relative; width: 100%; }
-        .toggle-pass { position: absolute; right: 20px; top: 22px; color: #d4af37; cursor: pointer; z-index: 10; }
-
-        .loader-container { display: none; position: fixed; inset: 0; background: #000; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; }
-        .spinner { width: 50px; height: 50px; border: 5px solid #111; border-top: 5px solid #d4af37; border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
+        input, select { background: #111!important; border: 1px solid #333!important; color: white!important; border-radius: 18px!important; padding: 18px!important; width: 100%; margin-bottom: 15px; outline: none; font-size: 15px; }
+        
         .dashboard-bg { background-color: #f4f7f6; color: #333; }
         .card-project { background: white; border-radius: 25px; overflow: hidden; margin-bottom: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
         .nav-bar { background: white; border-top: 1px solid #eee; position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; padding: 15px 0; z-index: 100; }
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
-        .profile-row { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #eee; font-size: 14px; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
+        
+        .loader-container { display: none; position: fixed; inset: 0; background: #000; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; }
+        .spinner { width: 50px; height: 50px; border: 5px solid #111; border-top: 5px solid #d4af37; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -33,52 +30,69 @@
 <div id="app">
     <div id="page-welcome" class="step-page active items-center justify-center text-center">
         <h1 class="text-4xl font-black mb-16 text-yellow-500 italic">Investissement <br>& Avenir</h1>
-        <button onclick="goTo('page-step1')" class="gold-btn w-full py-6 rounded-2xl mb-4 uppercase text-lg">Ouvrir un compte</button>
+        <button onclick="goTo('page-step1')" class="gold-btn w-full py-6 rounded-2xl mb-4 uppercase text-lg shadow-lg">Ouvrir un compte</button>
         <button onclick="goTo('page-login')" class="w-full py-6 rounded-2xl border border-white/20 uppercase font-bold text-sm">Se connecter</button>
     </div>
 
     <div id="page-login" class="step-page">
         <h2 class="text-2xl font-black mb-8 text-yellow-500">Connexion</h2>
-        <input type="email" id="login-email" placeholder="Ex: votre@email.com">
-        <div class="pass-container">
-            <input type="password" id="login-pass" placeholder="Votre mot de passe">
-            <i class="fa-solid fa-eye toggle-pass" onclick="togglePass('login-pass', this)"></i>
-        </div>
+        <input type="email" id="login-email" placeholder="Email">
+        <input type="password" id="login-pass" placeholder="Mot de passe">
         <button onclick="loginUser()" class="gold-btn w-full py-6 rounded-2xl mt-6 uppercase">Entrer</button>
         <p onclick="goTo('page-welcome')" class="text-center mt-8 text-gray-500 cursor-pointer">Retour</p>
     </div>
 
     <div id="page-step1" class="step-page">
         <h2 class="text-2xl font-black mb-10 text-yellow-500">Votre numéro</h2>
-        <input type="tel" id="reg-phone" placeholder="Ex: +33 6 00 00 00 00">
+        <input type="tel" id="reg-phone" placeholder="Ex: +33 6 12 34 56 78">
         <button onclick="goTo('page-step2')" class="gold-btn w-full py-6 rounded-2xl mt-auto uppercase">Suivant</button>
     </div>
 
     <div id="page-step2" class="step-page">
-        <h2 class="text-2xl font-black mb-10 text-yellow-500">Accès sécurisés</h2>
-        <input type="email" id="reg-email" placeholder="Ex: amed.himz@gmail.com">
-        <div class="pass-container">
-            <input type="password" id="reg-pass" placeholder="Créer un mot de passe">
-            <i class="fa-solid fa-eye toggle-pass" onclick="togglePass('reg-pass', this)"></i>
-        </div>
+        <h2 class="text-2xl font-black mb-10 text-yellow-500">Accès</h2>
+        <input type="email" id="reg-email" placeholder="Email (Ex: amed@mail.com)">
+        <input type="password" id="reg-pass" placeholder="Mot de passe">
         <button onclick="goTo('page-step3')" class="gold-btn w-full py-6 rounded-2xl mt-auto uppercase">Suivant</button>
     </div>
 
     <div id="page-step3" class="step-page">
-        <h2 class="text-2xl font-black mb-6 text-yellow-500">Votre identité</h2>
+        <h2 class="text-2xl font-black mb-6 text-yellow-500">Identité</h2>
         <select id="reg-sexe">
             <option value="M.">M. (Monsieur)</option>
             <option value="Mme">Mme (Madame)</option>
         </select>
-        <input type="text" id="reg-nom" placeholder="Nom (Ex: HIMZ)">
-        <input type="text" id="reg-prenom" placeholder="Prénom (Ex: Amed)">
-        <input type="text" id="reg-dob" placeholder="12.09.1990">
+        <input type="text" id="reg-nom" placeholder="Nom">
+        <input type="text" id="reg-prenom" placeholder="Prénom">
+        <input type="text" id="reg-dob" placeholder="Date de naissance (12.09.1990)">
+        <select id="reg-nat">
+            <option value="" disabled selected>Nationalité</option>
+            <optgroup label="Afrique">
+                <option value="Marocaine">🇲🇦 Marocaine</option>
+                <option value="Algérienne">🇩🇿 Algérienne</option>
+                <option value="Sénégalaise">🇸🇳 Sénégalaise</option>
+                <option value="Ivoirienne">🇨🇮 Ivoirienne</option>
+                <option value="Camerounaise">🇨🇲 Camerounaise</option>
+            </optgroup>
+            <optgroup label="Europe">
+                <option value="Française">🇫🇷 Française</option>
+                <option value="Belge">🇧🇪 Belge</option>
+                <option value="Suisse">🇨🇭 Suisse</option>
+                <option value="Espagnole">🇪🇸 Espagnole</option>
+            </optgroup>
+        </select>
         <button onclick="goTo('page-step4')" class="gold-btn w-full py-6 rounded-2xl mt-auto uppercase">Suivant</button>
     </div>
 
     <div id="page-step4" class="step-page">
         <h2 class="text-2xl font-black mb-6 text-yellow-500">Résidence</h2>
-        <input type="text" id="reg-pays" placeholder="Pays (Ex: France)">
+        <select id="reg-pays">
+            <option value="" disabled selected>Pays de résidence</option>
+            <option value="France">🇫🇷 France</option>
+            <option value="Belgique">🇧🇪 Belgique</option>
+            <option value="Suisse">🇨🇭 Suisse</option>
+            <option value="Maroc">🇲🇦 Maroc</option>
+            <option value="Sénégal">🇸🇳 Sénégal</option>
+        </select>
         <input type="text" id="reg-num-rue" placeholder="N° de rue">
         <input type="text" id="reg-nom-rue" placeholder="Nom de rue">
         <input type="text" id="reg-cp" placeholder="Code Postal">
@@ -88,95 +102,117 @@
 
     <div id="page-step5" class="step-page">
         <h2 class="text-2xl font-black mb-6 text-yellow-500">Confirmation</h2>
-        <div class="bg-[#111] p-6 rounded-2xl mb-8 text-sm text-gray-400 overflow-y-auto max-h-[300px]">
-            En cochant, vous acceptez les politiques de confidentialité de Investissement & Avenir...
+        <div class="bg-[#111] p-6 rounded-2xl mb-8 text-xs text-gray-400">
+            En cliquant sur J'accepte, vous validez l'ouverture de votre compte d'investissement.
         </div>
         <div class="flex items-center gap-4 mb-8">
             <input type="checkbox" id="accept-terms" class="w-6 h-6">
-            <label class="text-xs text-gray-400">J'ai bien lu et j'accepte les conditions.</label>
+            <label class="text-[10px] text-gray-500 uppercase font-bold">J'ai bien lu et j'accepte les conditions</label>
         </div>
         <button onclick="createAccountProcess()" class="gold-btn w-full py-6 rounded-2xl uppercase">J'accepte</button>
     </div>
 
     <div id="page-dashboard" class="step-page dashboard-bg !p-0 !pb-24">
-        <div class="p-6 bg-white flex justify-between items-center shadow-sm">
+        <div class="p-6 bg-white flex justify-between items-center border-b">
             <div>
-                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Investissement & Avenir</p>
-                <h3 id="user-display" class="font-black text-lg text-gray-800 italic">---</h3>
+                <p class="text-[10px] text-gray-400 font-bold uppercase">Investissement & Avenir</p>
+                <h3 id="user-display" class="font-black text-lg text-gray-800">---</h3>
             </div>
-            <div onclick="goTo('page-profile')" class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center text-yellow-600 cursor-pointer">
+            <div onclick="goTo('page-profile')" class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center text-yellow-600 cursor-pointer shadow-sm">
                 <i class="fa-solid fa-user"></i>
             </div>
         </div>
 
         <div class="p-6">
             <div class="bg-[#1a2b3c] p-10 rounded-[40px] text-white shadow-2xl mb-8">
-                <p class="text-[10px] uppercase font-bold text-gray-400">Solde disponible</p>
+                <p class="text-[10px] uppercase font-bold text-gray-400 tracking-widest">Solde actuel</p>
                 <h2 class="text-5xl font-black mt-2">0,00 €</h2>
                 <div class="mt-10 flex gap-4">
                     <button onclick="showModal('modal-recharge')" class="bg-white text-black px-6 py-5 rounded-2xl font-black text-xs flex-1 uppercase">Recharger</button>
                     <button onclick="alert('Votre solde est insuffisant pour faire des retraits. Rechargez votre compte pour commencer à investir.')" class="bg-white/10 text-white px-6 py-5 rounded-2xl font-black text-xs flex-1 uppercase">Retrait</button>
                 </div>
             </div>
-            <h4 class="font-black text-2xl mb-8 flex items-center gap-3"><i class="fa-solid fa-leaf text-green-500"></i> Projets Durables</h4>
+
+            <h4 class="font-black text-xl mb-8 flex items-center gap-2"><i class="fa-solid fa-chart-line text-yellow-600"></i> Projets Sélectionnés</h4>
             <div id="projects-container"></div>
         </div>
 
-        <div class="nav-bar">
-            <div onclick="goTo('page-dashboard')" class="flex flex-col items-center text-yellow-600 cursor-pointer">
-                <i class="fa-solid fa-house text-xl mb-1"></i><span class="text-[10px] font-bold">ACCUEIL</span>
+        <div class="nav-bar shadow-xl">
+            <div onclick="goTo('page-dashboard')" class="flex flex-col items-center text-yellow-600 cursor-pointer"><i class="fa-solid fa-house text-xl mb-1"></i><span class="text-[10px] font-bold">ACCUEIL</span></div>
+            <div onclick="showModal('modal-help')" class="flex flex-col items-center text-gray-400 cursor-pointer"><i class="fa-solid fa-headset text-xl mb-1"></i><span class="text-[10px] font-bold">AIDE</span></div>
+        </div>
+    </div>
+
+    <div id="page-project-detail" class="step-page dashboard-bg !p-0">
+        <div class="relative h-64">
+            <img id="det-img" src="" class="w-full h-full object-cover">
+            <div onclick="goTo('page-dashboard')" class="absolute top-6 left-6 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-xl cursor-pointer">
+                <i class="fa-solid fa-arrow-left"></i>
             </div>
-            <div onclick="showModal('modal-help')" class="flex flex-col items-center text-gray-400 cursor-pointer">
-                <i class="fa-solid fa-headset text-xl mb-1"></i><span class="text-[10px] font-bold">AIDE</span>
+        </div>
+        <div class="p-8 bg-white rounded-t-[40px] -mt-10 relative z-10 shadow-inner">
+            <h2 id="det-title" class="text-2xl font-black mb-2 text-gray-800">---</h2>
+            <p id="det-owner" class="text-yellow-600 text-[10px] font-black uppercase mb-6 tracking-widest">---</p>
+            
+            <div class="bg-gray-50 p-6 rounded-3xl mb-6">
+                <div class="flex justify-between mb-4 border-b pb-2"><span>Localisation</span><span id="det-loc" class="font-bold text-sm">---</span></div>
+                <div class="flex justify-between mb-4 border-b pb-2"><span>Taille du projet</span><span id="det-size" class="font-bold text-sm">---</span></div>
+                <div class="flex justify-between"><span>Rendement</span><span id="det-perc" class="font-bold text-green-600">---</span></div>
             </div>
+
+            <h4 class="font-black text-sm uppercase mb-3">À propos du projet</h4>
+            <p id="det-desc" class="text-gray-500 text-sm leading-relaxed mb-8">---</p>
+
+            <button onclick="alert('Solde insuffisant')" class="gold-btn w-full py-5 rounded-2xl uppercase shadow-lg">Investir maintenant</button>
         </div>
     </div>
 
     <div id="page-profile" class="step-page dashboard-bg !p-0">
-        <div class="p-6 bg-white flex items-center gap-4 border-b">
+        <div class="p-6 bg-white border-b flex items-center gap-4">
             <i onclick="goTo('page-dashboard')" class="fa-solid fa-arrow-left text-xl cursor-pointer"></i>
             <h2 class="text-xl font-black">Mon Profil</h2>
         </div>
         <div class="p-6">
-            <div class="bg-white p-6 rounded-3xl mb-6">
-                <div class="profile-row"><span>Nom Complet</span><span id="prof-name" class="font-bold">---</span></div>
-                <div class="profile-row"><span>Email</span><span id="prof-email" class="font-bold">---</span></div>
-                <div class="profile-row"><span>Téléphone</span><span id="prof-tel" class="font-bold">---</span></div>
-                <div class="profile-row"><span>Date naissance</span><span id="prof-dob" class="font-bold">---</span></div>
+            <div class="bg-white p-6 rounded-3xl shadow-sm mb-6">
+                <p class="text-[10px] font-black text-gray-300 uppercase mb-4">Informations</p>
+                <div class="flex justify-between py-3 border-b text-sm"><span>Nom Complet</span><span id="p-full" class="font-bold">---</span></div>
+                <div class="flex justify-between py-3 border-b text-sm"><span>Email</span><span id="p-email" class="font-bold text-xs">---</span></div>
+                <div class="flex justify-between py-3 text-sm"><span>Téléphone</span><span id="p-tel" class="font-bold">---</span></div>
             </div>
-            <div class="bg-white p-6 rounded-3xl">
-                <div class="profile-row"><span>Pays</span><span id="prof-pays" class="font-bold">---</span></div>
-                <div id="prof-addr" class="text-xs font-bold pt-4 text-gray-500">---</div>
+            <div class="bg-white p-6 rounded-3xl shadow-sm">
+                <p class="text-[10px] font-black text-gray-300 uppercase mb-4">Adresse</p>
+                <p id="p-addr" class="text-sm font-bold">---</p>
             </div>
+            <button onclick="location.reload()" class="w-full mt-10 text-red-500 font-bold">Se déconnecter</button>
         </div>
     </div>
 
     <div id="modal-help" class="modal">
-        <div class="bg-white w-full rounded-[35px] p-10 max-w-sm text-center">
+        <div class="bg-white w-full rounded-[35px] p-10 max-w-sm text-center text-gray-800">
             <i class="fa-brands fa-whatsapp text-6xl text-green-500 mb-6"></i>
-            <h3 class="text-2xl font-black mb-4">Besoin d'aide ?</h3>
-            <p class="text-sm text-gray-500 mb-8">Contactez notre service client 24h/24 via WhatsApp.</p>
-            <a href="https://wa.me/33756966407" class="block w-full py-5 bg-[#25D366] text-white rounded-2xl font-black uppercase mb-4">Contacter WhatsApp</a>
-            <button onclick="hideModal('modal-help')" class="text-gray-400 font-bold uppercase">Fermer</button>
+            <h3 class="text-xl font-black mb-4">Besoin d'assistance ?</h3>
+            <p class="text-sm text-gray-500 mb-8">Contactez notre service client disponible 24h/24 et 7j/7.</p>
+            <a href="https://wa.me/33756966407" class="block w-full py-5 bg-[#25D366] text-white rounded-2xl font-black uppercase mb-4 shadow-lg">WhatsApp</a>
+            <button onclick="hideModal('modal-help')" class="text-gray-300 font-bold uppercase text-xs">Fermer</button>
         </div>
     </div>
 
     <div id="modal-recharge" class="modal">
-        <div class="bg-white w-full rounded-[35px] p-8 max-w-sm">
-            <h3 class="text-xl font-black mb-4 text-gray-800">Recharger par virement</h3>
-            <div class="bg-gray-50 p-6 rounded-3xl border text-gray-800">
-                <p class="text-[10px] font-bold text-gray-400 uppercase">Bénéficiaire</p>
-                <p id="iban-beneficiary" class="font-black mb-4">---</p>
-                <p class="text-[10px] font-bold text-gray-400 uppercase">IBAN</p>
-                <p class="font-mono text-sm font-bold">FR76 3000 6000 0123 4567 8901 234</p>
+        <div class="bg-white w-full rounded-[35px] p-8 max-w-sm text-gray-800">
+            <h3 class="text-xl font-black mb-6">Recharger le compte</h3>
+            <div class="bg-gray-100 p-6 rounded-3xl mb-8">
+                <p class="text-[10px] text-gray-400 font-bold uppercase">Bénéficiaire</p>
+                <p id="iban-name" class="font-black mb-4">---</p>
+                <p class="text-[10px] text-gray-400 font-bold uppercase">IBAN</p>
+                <p class="font-mono text-xs font-bold">FR76 3000 6000 0123 4567 8901 234</p>
             </div>
-            <button onclick="hideModal('modal-recharge')" class="w-full mt-6 py-5 bg-black text-white rounded-2xl font-black uppercase">Fermer</button>
+            <button onclick="hideModal('modal-recharge')" class="w-full py-5 bg-black text-white rounded-2xl font-black uppercase">Fermer</button>
         </div>
     </div>
 
     <div id="loader" class="loader-container">
         <div class="spinner"></div>
-        <p class="mt-6 text-yellow-500 font-bold uppercase text-sm tracking-tighter">Création de votre accès sécurisé...</p>
+        <p class="mt-6 text-yellow-500 font-bold uppercase text-xs tracking-widest">Initialisation sécurisée...</p>
     </div>
 </div>
 
@@ -193,31 +229,71 @@
       appId: "1:109431023120:web:469c6c2cb0d027a3180c95"
     };
 
-    const firebaseApp = initializeApp(firebaseConfig);
-    const db = getFirestore(firebaseApp);
+    const fbApp = initializeApp(firebaseConfig);
+    const db = getFirestore(fbApp);
 
-    // Fonctions Globales pour les boutons
+    // BASE DE DONNÉES DES PROJETS RÉELS
+    const PROJETS_DATA = [
+        { 
+            title: "Résidence de Luxe 'Le Belvédère'", 
+            type: "IMMOBILIER", 
+            owner: "Groupe Nexity", 
+            loc: "12 Avenue Montaigne, 75008 Paris, France", 
+            size: "4 200 m²", 
+            perc: 15, 
+            price: "1 500 000€", 
+            img: "https://images.unsplash.com/photo-1545324418-f1d3c5b53571?auto=format&fit=crop&w=600",
+            desc: "Construction d'un complexe résidentiel de haut standing au cœur du 8ème arrondissement. Projet sécurisé avec permis de construire validé."
+        },
+        { 
+            title: "Extension Logistique Portuaire", 
+            type: "MARCHANDISES", 
+            owner: "DHL Global Logistics", 
+            loc: "Port d'Anvers, Quai 120, Belgique", 
+            size: "12 500 m²", 
+            perc: 28, 
+            price: "2 800 000€", 
+            img: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=600",
+            desc: "Développement d'un nouveau terminal de stockage automatisé pour le traitement des marchandises internationales."
+        },
+        { 
+            title: "Ferme Solaire Ouarzazate III", 
+            type: "ÉNERGIE", 
+            owner: "Masen (Moroccan Agency for Sustainable Energy)", 
+            loc: "Zone Solaire Noor, Ouarzazate, Maroc", 
+            size: "150 Hectares", 
+            perc: 10, 
+            price: "4 500 000€", 
+            img: "https://images.unsplash.com/photo-1509391366360-fe5bb58583bb?auto=format&fit=crop&w=600",
+            desc: "Installation de panneaux photovoltaïques de dernière génération pour alimenter plus de 15 000 foyers en énergie propre."
+        },
+        { 
+            title: "Complexe Hôtelier 'Eco-Resort'", 
+            type: "DIVERTISSEMENT", 
+            owner: "Radisson Blu Group", 
+            loc: "Plage de Saly, Mbour, Sénégal", 
+            size: "8 000 m²", 
+            perc: 22, 
+            price: "3 200 000€", 
+            img: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600",
+            desc: "Création d'un complexe touristique écologique favorisant l'emploi local et le développement durable de la région."
+        }
+    ];
+
     window.goTo = (id) => {
         document.querySelectorAll('.step-page').forEach(p => p.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         window.scrollTo(0,0);
     };
 
-    window.togglePass = (id, el) => {
-        const input = document.getElementById(id);
-        input.type = input.type === "password" ? "text" : "password";
-        el.classList.toggle('fa-eye');
-        el.classList.toggle('fa-eye-slash');
-    };
-
     window.showModal = (id) => document.getElementById(id).style.display = 'flex';
     window.hideModal = (id) => document.getElementById(id).style.display = 'none';
 
     window.createAccountProcess = () => {
-        if(!document.getElementById('accept-terms').checked) return alert("Cochez la case.");
+        if(!document.getElementById('accept-terms').checked) return alert("Veuillez accepter.");
         document.getElementById('loader').style.display = 'flex';
         setTimeout(async () => {
-            const data = {
+            const user = {
                 tel: document.getElementById('reg-phone').value,
                 email: document.getElementById('reg-email').value,
                 pass: document.getElementById('reg-pass').value,
@@ -226,11 +302,11 @@
                 prenom: document.getElementById('reg-prenom').value,
                 dob: document.getElementById('reg-dob').value,
                 pays: document.getElementById('reg-pays').value,
-                addr: document.getElementById('reg-num-rue').value + " " + document.getElementById('reg-nom-rue').value + ", " + document.getElementById('reg-ville').value + " (" + document.getElementById('reg-cp').value + ")"
+                addr: document.getElementById('reg-num-rue').value + " " + document.getElementById('reg-nom-rue').value + ", " + document.getElementById('reg-ville').value
             };
             try {
-                await setDoc(doc(db, "users", "u_" + Date.now()), data);
-                updateUI(data);
+                await setDoc(doc(db, "users", "u_" + Date.now()), user);
+                updateAllUI(user);
                 document.getElementById('loader').style.display = 'none';
                 goTo('page-dashboard');
                 renderProjects();
@@ -244,40 +320,56 @@
         const q = query(collection(db, "users"), where("email", "==", email), where("pass", "==", pass));
         const qs = await getDocs(q);
         if (!qs.empty) {
-            updateUI(qs.docs[0].data());
+            updateAllUI(qs.docs[0].data());
             goTo('page-dashboard');
             renderProjects();
-        } else { alert("Accès refusé"); }
+        } else { alert("Erreur d'identifiants"); }
     };
 
-    function updateUI(user) {
-        document.getElementById('user-display').innerText = `Bienvenue, ${user.sexe} ${user.nom}`;
-        document.getElementById('prof-name').innerText = `${user.prenom} ${user.nom}`;
-        document.getElementById('prof-email').innerText = user.email;
-        document.getElementById('prof-tel').innerText = user.tel;
-        document.getElementById('prof-dob').innerText = user.dob;
-        document.getElementById('prof-pays').innerText = user.pays;
-        document.getElementById('prof-addr').innerText = user.addr;
-        document.getElementById('iban-beneficiary').innerText = `${user.sexe} ${user.nom}`;
+    function updateAllUI(user) {
+        const title = `${user.sexe} ${user.nom}`;
+        document.getElementById('user-display').innerText = `Bienvenue, ${title}`;
+        document.getElementById('p-full').innerText = `${user.prenom} ${user.nom}`;
+        document.getElementById('p-email').innerText = user.email;
+        document.getElementById('p-tel').innerText = user.tel;
+        document.getElementById('p-addr').innerText = user.addr;
+        document.getElementById('iban-name').innerText = title;
     }
 
-    function renderProjects() {
+    window.openDetails = (index) => {
+        const p = PROJETS_DATA[index];
+        document.getElementById('det-img').src = p.img;
+        document.getElementById('det-title').innerText = p.title;
+        document.getElementById('det-owner').innerText = `Propriétaire: ${p.owner}`;
+        document.getElementById('det-loc').innerText = p.loc;
+        document.getElementById('det-size').innerText = p.size;
+        document.getElementById('det-perc').innerText = `+${p.perc}% Estimé`;
+        document.getElementById('det-desc').innerText = p.desc;
+        goTo('page-project-detail');
+    };
+
+    window.renderProjects = () => {
         const container = document.getElementById('projects-container');
         container.innerHTML = "";
-        for(let i=1; i<=35; i++) {
-            const perc = [12, 25, 18, 33][i % 4];
+        PROJETS_DATA.forEach((p, index) => {
             container.innerHTML += `
                 <div class="card-project">
-                    <img src="https://picsum.photos/600/400?sig=${i}" class="w-full h-48 object-cover">
+                    <img src="${p.img}" class="w-full h-44 object-cover">
                     <div class="p-6">
-                        <h5 class="font-black text-xl mb-4 text-gray-800">Projet Énergie #${i}</h5>
-                        <div class="w-full bg-gray-100 h-2 rounded-full mb-4"><div class="bg-yellow-500 h-2 rounded-full" style="width:${perc}%"></div></div>
-                        <p class="text-[10px] font-bold text-yellow-600 mb-6 uppercase">${perc}% Financé</p>
-                        <button class="w-full border-2 border-yellow-500 text-yellow-600 py-4 rounded-xl font-black text-[10px] uppercase">Voir plus</button>
+                        <span class="text-[9px] font-black bg-yellow-50 text-yellow-600 px-2 py-1 rounded uppercase mb-2 inline-block">${p.type}</span>
+                        <h5 class="font-black text-lg mb-4 text-gray-800">${p.title}</h5>
+                        <div class="w-full bg-gray-100 h-2 rounded-full mb-2">
+                            <div class="bg-yellow-500 h-2 rounded-full" style="width:${p.perc*3}%"></div>
+                        </div>
+                        <div class="flex justify-between text-[10px] font-bold text-gray-400 mb-6 uppercase">
+                            <span>Objectif: ${p.price}</span>
+                            <span class="text-yellow-600">${p.perc}%</span>
+                        </div>
+                        <button onclick="openDetails(${index})" class="w-full border-2 border-yellow-500 text-yellow-600 py-4 rounded-xl font-black text-[10px] uppercase">Voir plus</button>
                     </div>
                 </div>`;
-        }
-    }
+        });
+    };
 </script>
 </body>
 </html>

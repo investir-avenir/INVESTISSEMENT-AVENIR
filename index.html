@@ -3,213 +3,222 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Investissement & Avenir</title>
+    <title>Investissement & Avenir Europe</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* Verrouillage de l'écran pour éviter le défilement sur l'inscription */
-        html, body { height: 100%; margin: 0; overflow: hidden; background-color: #000; font-family: sans-serif; }
-        
+        /* Verrouillage strict du défilement pour l'inscription */
+        html, body { 
+            height: 100%; 
+            margin: 0; 
+            overflow: hidden; 
+            background-color: #000; 
+            font-family: 'Inter', sans-serif;
+        }
+
         .step-page { 
             display: none; 
             height: 100vh; 
             width: 100vw; 
             flex-direction: column; 
-            padding: 30px; 
+            padding: 25px; 
             justify-content: space-between;
             box-sizing: border-box;
         }
         .active { display: flex; }
 
-        /* Style des entrées */
+        /* Inputs Professionnels */
         input, select { 
-            background: #1a1a1a!important; 
-            border: 1px solid #333!important; 
-            color: white!important; 
+            background: #121212!important; 
+            border: 1px solid #222!important; 
+            color: #fff!important; 
             border-radius: 12px!important; 
-            padding: 16px!important; 
+            padding: 14px!important; 
             width: 100%; 
             outline: none;
-            font-size: 16px;
+            font-size: 15px;
         }
 
         .gold-btn { 
             background: linear-gradient(135deg, #d4af37 0%, #f1d592 100%); 
             color: #000; 
             font-weight: 800; 
-            padding: 18px; 
-            border-radius: 15px; 
+            padding: 16px; 
+            border-radius: 14px; 
             text-transform: uppercase;
-            font-size: 12px;
+            font-size: 11px;
             letter-spacing: 1px;
+            margin-bottom: 20px; /* Remonté comme demandé */
         }
 
-        /* Dashboard autorise le scroll contrairement à l'inscription */
-        #page-dashboard { overflow-y: auto; display: none; height: 100vh; background: #f9fafb; color: #111; padding: 0; }
+        /* Dashboard avec Scroll pour les 300 projets */
+        #page-dashboard { overflow-y: auto; display: none; height: 100vh; background: #f4f7f6; color: #111; padding: 0; }
         #page-dashboard.active { display: block; }
 
-        .project-card { background: white; border-radius: 20px; margin: 15px; overflow: hidden; shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #eee; }
-        .project-img { width: 100%; height: 180px; object-fit: cover; background: #eee; }
+        /* Cartes de Projets en Texte/Couleurs */
+        .project-card { background: white; border-radius: 20px; margin: 15px; overflow: hidden; border: 1px solid #eee; }
+        .project-visual { 
+            height: 140px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            color: white; 
+            text-align: center;
+            padding: 15px;
+        }
+        .project-visual i { font-size: 40px; margin-bottom: 10px; opacity: 0.9; }
+        .project-visual span { font-weight: 900; font-size: 18px; text-transform: uppercase; letter-spacing: 1px; }
 
         .loader-screen {
             display: none; position: fixed; inset: 0; background: #000; z-index: 10000;
             flex-direction: column; align-items: center; justify-content: center;
         }
-        .spinner { width: 40px; height: 40px; border: 3px solid #222; border-top: 3px solid #d4af37; border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
 <div id="app">
     <div id="loader" class="loader-screen">
-        <div class="spinner"></div>
-        <p id="loader-text" class="text-yellow-500 font-bold text-[10px] mt-6 tracking-[0.3em] uppercase text-center px-10">Vérification de sécurité...</p>
+        <div class="w-10 h-10 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
+        <p id="loader-text" class="text-yellow-500 font-bold text-[10px] mt-6 uppercase tracking-widest text-center px-10">Sécurisation européenne...</p>
     </div>
 
     <div id="page-welcome" class="step-page active">
-        <div class="mt-20 text-center">
-            <h1 class="text-4xl font-black text-white italic tracking-tighter">INVESTISSEMENT <br><span class="text-yellow-500">& AVENIR</span></h1>
-            <p class="text-gray-500 text-xs mt-4 uppercase tracking-widest">Gestion de patrimoine Europe</p>
+        <div class="mt-16 text-center">
+            <div class="w-16 h-16 bg-yellow-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-yellow-500/20">
+                <i class="fa-solid fa-shield-halved text-black text-2xl"></i>
+            </div>
+            <h1 class="text-3xl font-black text-white italic">INVESTISSEMENT<br>& AVENIR <span class="text-yellow-500">EU</span></h1>
         </div>
-        <div class="mb-10 space-y-4">
-            <button onclick="goTo('page-step1')" class="gold-btn w-full">Devenir Investisseur</button>
-            <button class="w-full text-white/40 text-[10px] font-bold uppercase py-2">Accès Client</button>
-        </div>
+        <button onclick="goTo('page-step1')" class="gold-btn w-full">Démarrer l'inscription</button>
     </div>
 
     <div id="page-step1" class="step-page">
         <div>
-            <h2 class="text-xl font-bold text-yellow-500 uppercase mt-10">Votre Mobile</h2>
-            <p class="text-gray-500 text-xs mt-2">Pour la double authentification.</p>
-            <div class="mt-10"><input type="tel" placeholder="+33 6 00 00 00 00"></div>
+            <h2 class="text-xl font-bold text-yellow-500 uppercase mt-6">Localisation</h2>
+            <div class="mt-8 space-y-4">
+                <label class="text-[10px] text-gray-500 uppercase font-bold px-2">Nationalité Européenne</label>
+                <select id="nat-select"></select>
+                <label class="text-[10px] text-gray-500 uppercase font-bold px-2">Pays de Résidence</label>
+                <select id="res-select"></select>
+            </div>
         </div>
-        <button onclick="goTo('page-step2')" class="gold-btn w-full mb-10">Continuer</button>
+        <button onclick="goTo('page-step2')" class="gold-btn w-full">Suivant</button>
     </div>
 
     <div id="page-step2" class="step-page">
         <div>
-            <h2 class="text-xl font-bold text-yellow-500 uppercase mt-10">Identité</h2>
-            <div class="mt-10 space-y-4">
-                <input type="text" placeholder="Nom complet">
-                <input type="text" placeholder="Date de naissance">
-                <select>
-                    <option>France 🇫🇷</option>
-                    <option>Belgique 🇧🇪</option>
-                    <option>Luxembourg 🇱🇺</option>
-                    <option>Suisse 🇨🇭</option>
-                </select>
+            <h2 class="text-xl font-bold text-yellow-500 uppercase mt-6">Coordonnées</h2>
+            <div class="mt-8 space-y-4">
+                <input type="text" placeholder="Prénom et Nom">
+                <input type="email" placeholder="Adresse Email">
+                <input type="tel" placeholder="Numéro de téléphone">
             </div>
         </div>
-        <button onclick="goTo('page-step3')" class="gold-btn w-full mb-10">Suivant</button>
-    </div>
-
-    <div id="page-step3" class="step-page">
-        <div>
-            <h2 class="text-xl font-bold text-yellow-500 uppercase mt-10">Confidentialité</h2>
-            <div class="mt-8 bg-zinc-900 p-5 rounded-xl text-[11px] text-gray-400 leading-relaxed border border-white/5 h-64 overflow-y-auto">
-                <p class="font-bold text-white mb-2 uppercase">Protection des données</p>
-                En créant un compte, vous acceptez que vos informations soient stockées de manière chiffrée. <br><br>
-                Nous utilisons le protocole SSL 256 bits pour sécuriser chaque transaction. Votre patrimoine est protégé par les garanties européennes de dépôt.
-            </div>
-        </div>
-        <button onclick="startCreation()" class="gold-btn w-full mb-10">Confirmer et Créer</button>
+        <button onclick="startCreation()" class="gold-btn w-full">Créer mon compte Europe</button>
     </div>
 
     <div id="page-dashboard" class="step-page">
-        <div class="p-6 bg-white border-b sticky top-0 z-50 flex justify-between items-center">
-            <h3 class="font-black italic text-lg tracking-tighter">I&A <span class="text-yellow-600">EUROPE</span></h3>
-            <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center"><i class="fa-solid fa-user text-xs"></i></div>
+        <div class="p-6 bg-white border-b sticky top-0 z-50 flex justify-between items-center shadow-sm">
+            <h3 class="font-black italic text-lg text-slate-800">I&A <span class="text-yellow-600">EUROPE</span></h3>
+            <div class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-400"><i class="fa-solid fa-user"></i></div>
         </div>
 
         <div class="p-4">
-            <div class="bg-slate-900 rounded-[30px] p-8 text-white shadow-xl mb-8">
-                <p class="text-[9px] uppercase text-gray-500 font-bold tracking-[2px]">Portefeuille Actif</p>
+            <div class="bg-slate-900 rounded-[35px] p-8 text-white shadow-2xl mb-8">
+                <p class="text-[10px] uppercase text-slate-500 font-bold tracking-widest">Solde du compte</p>
                 <h2 class="text-4xl font-black mt-2">0,00 €</h2>
-                <div class="flex gap-3 mt-6">
-                    <button class="bg-white text-black text-[10px] font-black py-3 px-6 rounded-lg uppercase flex-1">Déposer</button>
-                    <button class="bg-white/10 text-white text-[10px] font-black py-3 px-6 rounded-lg uppercase flex-1">Retrait</button>
+                <div class="flex gap-3 mt-8">
+                    <button class="bg-white text-black text-[10px] font-black py-4 rounded-xl flex-1 uppercase">Déposer</button>
+                    <button class="bg-slate-800 text-slate-400 text-[10px] font-black py-4 rounded-xl flex-1 uppercase">Retrait</button>
                 </div>
             </div>
 
-            <h4 class="font-black text-xs uppercase tracking-widest px-2 mb-4">Opportunités Europe</h4>
+            <h4 class="font-black text-xs uppercase tracking-widest px-2 mb-6 flex items-center gap-2">
+                <i class="fa-solid fa-euro-sign text-yellow-600"></i> Projets Européens Actifs
+            </h4>
             <div id="project-list"></div>
         </div>
         
-        <div class="h-20"></div>
-        <div class="fixed bottom-0 w-full bg-white border-t flex justify-around p-4 z-50">
-            <i class="fa-solid fa-house text-yellow-600"></i>
-            <i class="fa-solid fa-chart-pie text-gray-300"></i>
-            <i class="fa-solid fa-headset text-gray-300"></i>
+        <div class="h-24"></div>
+        <div class="fixed bottom-0 w-full bg-white border-t flex justify-around p-5 z-50">
+            <i class="fa-solid fa-house text-yellow-600 text-xl"></i>
+            <i class="fa-solid fa-chart-line text-slate-300 text-xl"></i>
+            <i class="fa-solid fa-wallet text-slate-300 text-xl"></i>
         </div>
     </div>
 </div>
 
 <script>
-    // Liste de 35 projets 100% Europe avec images garanties
-    const PROJETS_EUROPE = [
-        { t: "Résidence Élysée", l: "Paris, France", img: "https://images.unsplash.com/photo-1502602898657-3e917247a183?w=500&q=80" },
-        { t: "Complexe Solaire", l: "Séville, Espagne", img: "https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=500&q=80" },
-        { t: "Bureaux Tech", l: "Berlin, Allemagne", img: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=500&q=80" },
-        { t: "Port de Rotterdam", l: "Pays-Bas", img: "https://images.unsplash.com/photo-1524522173746-f628baad3f44?w=500&q=80" },
-        { t: "Eco-Quartier", l: "Stockholm, Suède", img: "https://images.unsplash.com/photo-1518005020480-1cd34333799c?w=500&q=80" },
-        { t: "Centre Logistique", l: "Lyon, France", img: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=500&q=80" },
-        { t: "Tour Financière", l: "Londres, UK", img: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=500&q=80" },
-        { t: "Data Center", l: "Dublin, Irlande", img: "https://images.unsplash.com/photo-1558494949-ef010cbdcc51?w=500&q=80" },
-        { t: "Vignoble Bio", l: "Bordeaux, France", img: "https://images.unsplash.com/photo-1504275107627-0c2ba7a43dba?w=500&q=80" },
-        { t: "Parc Éolien", l: "Écosse", img: "https://images.unsplash.com/photo-1466611653911-95282ee3956f?w=500&q=80" },
-        { t: "Luxe Rivieira", l: "Monaco", img: "https://images.unsplash.com/photo-1520607162513-90ad0c860597?w=500&q=80" }
-        // ... (Le script va dupliquer et varier pour atteindre 35)
+    const PAYS_EU = [
+        "Allemagne", "Autriche", "Belgique", "Bulgarie", "Chypre", "Croatie", "Danemark", "Espagne", 
+        "Estonie", "Finlande", "France", "Grèce", "Hongrie", "Irlande", "Italie", "Lettonie", 
+        "Lituanie", "Luxembourg", "Malte", "Pays-Bas", "Pologne", "Portugal", "République Tchèque", 
+        "Roumanie", "Slovaquie", "Slovénie", "Suède", "Suisse", "Monaco", "Norvège"
     ];
+
+    const THEMES = [
+        { icon: "fa-building", color: "linear-gradient(135deg, #1e293b, #334155)", label: "IMMOBILIER" },
+        { icon: "fa-leaf", color: "linear-gradient(135deg, #065f46, #059669)", label: "ÉCOLOGIE" },
+        { icon: "fa-bolt", color: "linear-gradient(135deg, #1e40af, #3b82f6)", label: "ÉNERGIE" },
+        { icon: "fa-microchip", color: "linear-gradient(135deg, #4c1d95, #7c3aed)", label: "TECH" },
+        { icon: "fa-wine-glass", color: "linear-gradient(135deg, #7c2d12, #b91c1c)", label: "VITICULTURE" }
+    ];
+
+    // Remplissage des pays
+    const populatePays = () => {
+        const selects = [document.getElementById('nat-select'), document.getElementById('res-select')];
+        selects.forEach(s => {
+            PAYS_EU.sort().forEach(p => {
+                let opt = document.createElement('option');
+                opt.value = p; opt.innerText = p;
+                s.appendChild(opt);
+            });
+        });
+    };
+    populatePays();
 
     function goTo(id) {
         document.querySelectorAll('.step-page').forEach(p => p.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        window.scrollTo(0,0);
     }
 
     function startCreation() {
-        const loader = document.getElementById('loader');
-        const text = document.getElementById('loader-text');
-        loader.style.display = 'flex';
-
-        const msgs = [
-            "Analyse des données...",
-            "Vérification AML/KYC...",
-            "Ouverture du compte IBAN...",
-            "Sécurisation du Wallet...",
-            "Prêt !"
-        ];
-
+        document.getElementById('loader').style.display = 'flex';
+        const msgs = ["Vérification Européenne...", "Validation IBAN...", "Sécurisation KYC...", "Prêt !"];
         let i = 0;
-        const interval = setInterval(() => {
-            if(i < msgs.length) text.innerText = msgs[i++];
-        }, 3000);
+        const interval = setInterval(() => { 
+            if(i < msgs.length) document.getElementById('loader-text').innerText = msgs[i++]; 
+        }, 3500);
 
         setTimeout(() => {
             clearInterval(interval);
-            loader.style.display = 'none';
-            renderProjects();
+            document.getElementById('loader').style.display = 'none';
+            render300Projects();
             goTo('page-dashboard');
         }, 15000);
     }
 
-    function renderProjects() {
+    function render300Projects() {
         const container = document.getElementById('project-list');
         let html = '';
-        
-        // On génère 35 projets
-        for(let i=0; i<35; i++) {
-            const p = PROJETS_EUROPE[i % PROJETS_EUROPE.length];
+        for(let i=1; i<=300; i++) {
+            const theme = THEMES[i % THEMES.length];
+            const pays = PAYS_EU[i % PAYS_EU.length];
             html += `
                 <div class="project-card">
-                    <img src="${p.img}&sig=${i}" class="project-img" alt="Projet">
-                    <div class="p-4">
-                        <div class="flex justify-between items-center">
-                            <h5 class="font-black text-sm">${p.t} #${i+1}</h5>
-                            <span class="bg-green-100 text-green-700 text-[9px] font-bold px-2 py-1 rounded">+8.4%</span>
+                    <div class="project-visual" style="background: ${theme.color}">
+                        <i class="fa-solid ${theme.icon}"></i>
+                        <span>${theme.label}</span>
+                    </div>
+                    <div class="p-5">
+                        <div class="flex justify-between items-center mb-2">
+                            <h5 class="font-black text-sm text-slate-800">Projet Européen #${1000 + i}</h5>
+                            <span class="text-green-600 font-black text-xs">+${(Math.random() * 5 + 7).toFixed(1)}%</span>
                         </div>
-                        <p class="text-[10px] text-gray-400 mt-1 uppercase font-bold">${p.l}</p>
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest"><i class="fa-solid fa-location-dot mr-1"></i> ${pays}</p>
+                        <button class="w-full mt-4 bg-slate-50 text-slate-800 py-3 rounded-xl font-black text-[9px] uppercase border border-slate-100">Investir</button>
                     </div>
                 </div>
             `;

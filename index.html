@@ -14,12 +14,13 @@
         @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
         
         input, select { background: #111!important; border: 1px solid #333!important; color: white!important; border-radius: 15px!important; padding: 15px!important; width: 100%; margin-bottom: 12px; outline: none; font-size: 14px; }
-        
         .dashboard-bg { background-color: #f8fafc; color: #333; }
-        .card-project { background: white; border-radius: 20px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .nav-bar { background: white; border-top: 1px solid #eee; position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; padding: 12px 0; z-index: 100; }
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
-        .profile-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f1f1f1; font-size: 13px; }
+        .card-project { background: white; border-radius: 20px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eee; }
+        .nav-bar { background: white; border-top: 1px solid #eee; position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; padding: 15px 0; z-index: 100; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
+        .loader-container { display: none; position: fixed; inset: 0; background: #000; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; }
+        .spinner { width: 45px; height: 45px; border: 4px solid #111; border-top: 4px solid #d4af37; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -36,24 +37,26 @@
         <input type="email" id="login-email" placeholder="Email">
         <input type="password" id="login-pass" placeholder="Mot de passe">
         <button onclick="loginUser()" class="gold-btn w-full py-5 rounded-2xl mt-6 uppercase">Entrer</button>
-        <p onclick="goTo('page-welcome')" class="text-center mt-8 text-gray-500 cursor-pointer text-xs uppercase font-bold">Retour</p>
+        <p onclick="goTo('page-welcome')" class="text-center mt-8 text-gray-500 cursor-pointer text-xs font-bold">RETOUR</p>
     </div>
 
-    <div id="page-step1" class="step-page"><h2 class="text-xl font-black mb-8 text-yellow-500 uppercase">Mobile</h2><input type="tel" id="reg-phone" placeholder="+33..."><button onclick="goTo('page-step2')" class="gold-btn w-full py-5 rounded-2xl mt-auto uppercase">Suivant</button></div>
+    <div id="page-step1" class="step-page"><h2 class="text-xl font-black mb-8 text-yellow-500 uppercase">Numéro</h2><input type="tel" id="reg-phone" placeholder="+33..."><button onclick="goTo('page-step2')" class="gold-btn w-full py-5 rounded-2xl mt-auto uppercase">Suivant</button></div>
     <div id="page-step2" class="step-page"><h2 class="text-xl font-black mb-8 text-yellow-500 uppercase">Accès</h2><input type="email" id="reg-email" placeholder="Email"><input type="password" id="reg-pass" placeholder="Mot de passe"><button onclick="goTo('page-step3')" class="gold-btn w-full py-5 rounded-2xl mt-auto uppercase">Suivant</button></div>
     
     <div id="page-step3" class="step-page">
         <h2 class="text-xl font-black mb-6 text-yellow-500 uppercase">Identité</h2>
-        <select id="reg-sexe"><option value="M.">M.</option><option value="Mme">Mme</option></select>
+        <select id="reg-sexe"><option value="M.">Monsieur</option><option value="Mme">Madame</option></select>
         <input type="text" id="reg-nom" placeholder="Nom">
         <input type="text" id="reg-prenom" placeholder="Prénom">
-        <input type="text" id="reg-dob" placeholder="JJ.MM.AAAA">
-        <select id="reg-nat" class="country-list"></select> <button onclick="goTo('page-step4')" class="gold-btn w-full py-5 rounded-2xl mt-auto uppercase">Suivant</button>
+        <input type="text" id="reg-dob" placeholder="Date de naissance">
+        <select id="reg-nat" class="country-list"></select>
+        <button onclick="goTo('page-step4')" class="gold-btn w-full py-5 rounded-2xl mt-auto uppercase">Suivant</button>
     </div>
 
     <div id="page-step4" class="step-page">
         <h2 class="text-xl font-black mb-6 text-yellow-500 uppercase">Résidence</h2>
-        <select id="reg-pays" class="country-list"></select> <input type="text" id="reg-num-rue" placeholder="N°">
+        <select id="reg-pays" class="country-list"></select>
+        <input type="text" id="reg-num-rue" placeholder="N°">
         <input type="text" id="reg-nom-rue" placeholder="Rue">
         <input type="text" id="reg-cp" placeholder="Code Postal">
         <input type="text" id="reg-ville" placeholder="Ville">
@@ -61,33 +64,43 @@
     </div>
 
     <div id="page-step5" class="step-page">
-        <h2 class="text-xl font-black mb-6 text-yellow-500 uppercase">Terminer</h2>
+        <h2 class="text-xl font-black mb-6 text-yellow-500 uppercase">Confidentialité</h2>
+        <div class="bg-[#111] p-5 rounded-2xl mb-8 text-[10px] text-gray-400 overflow-y-auto h-64 leading-relaxed border border-white/5">
+            <p class="font-bold mb-2 text-white">POLITIQUE DE PROTECTION DES DONNÉES ET CONFIDENTIALITÉ</p>
+            Bienvenue sur Investissement & Avenir. Conformément au RGPD et aux normes internationales de protection des données, nous nous engageons à garantir la sécurité de vos informations personnelles et financières.<br><br>
+            1. **Collecte de données** : Nous collectons vos informations d'identité, de résidence et de contact pour assurer la conformité KYC (Know Your Customer).<br><br>
+            2. **Sécurité** : Vos fonds et vos données sont protégés par un cryptage AES-256 et des serveurs hautement sécurisés.<br><br>
+            3. **Usage** : Vos informations ne seront jamais vendues à des tiers. Elles servent uniquement à la gestion de vos investissements et à la validation de vos transactions bancaires.<br><br>
+            4. **Droits** : Vous disposez d'un droit d'accès, de rectification et de suppression de vos données à tout moment via notre service client.<br><br>
+            En validant, vous confirmez être majeur et responsable de vos choix d'investissement.
+        </div>
         <div class="flex items-center gap-4 mb-8">
             <input type="checkbox" id="accept-terms" class="w-6 h-6">
-            <label class="text-[10px] text-gray-500 uppercase font-bold">J'accepte les conditions</label>
+            <label class="text-[10px] text-gray-400 uppercase font-bold">Je reconnais avoir pris connaissance des termes.</label>
         </div>
-        <button onclick="createAccountProcess()" class="gold-btn w-full py-5 rounded-2xl uppercase">Valider</button>
+        <button onclick="createAccountProcess()" class="gold-btn w-full py-5 rounded-2xl uppercase">Activer mon compte</button>
     </div>
 
     <div id="page-dashboard" class="step-page dashboard-bg !p-0 !pb-24">
         <div class="p-6 bg-white flex justify-between items-center border-b">
             <div>
-                <p class="text-[9px] text-gray-400 font-bold uppercase">Investissement & Avenir</p>
-                <h3 id="user-display" class="font-black text-lg text-gray-800 italic">---</h3>
+                <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">Investissement & Avenir</p>
+                <h3 id="user-display" class="font-black text-lg text-gray-800">---</h3>
             </div>
-            <div onclick="goTo('page-profile')" class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center text-yellow-600 cursor-pointer">
+            <div onclick="goTo('page-profile')" class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center text-yellow-600 cursor-pointer shadow-inner">
                 <i class="fa-solid fa-user"></i>
             </div>
         </div>
         <div class="p-5">
-            <div class="bg-[#0f172a] p-8 rounded-[30px] text-white shadow-2xl mb-8">
-                <p class="text-[9px] uppercase font-bold text-gray-400">Solde</p>
-                <h2 class="text-4xl font-black mt-2">0,00 €</h2>
+            <div class="bg-[#0f172a] p-8 rounded-[35px] text-white shadow-2xl mb-8">
+                <p class="text-[9px] uppercase font-bold text-gray-500">Solde Disponible</p>
+                <h2 class="text-4xl font-black mt-1">0,00 €</h2>
                 <div class="mt-8 flex gap-3">
-                    <button onclick="showModal('modal-recharge')" class="bg-white text-black px-4 py-4 rounded-xl font-black text-[10px] flex-1 uppercase">Dépôt</button>
-                    <button onclick="alert('Solde insuffisant pour un retrait.')" class="bg-white/10 text-white px-4 py-4 rounded-xl font-black text-[10px] flex-1 uppercase">Retrait</button>
+                    <button onclick="showModal('modal-recharge')" class="bg-white text-black px-4 py-4 rounded-xl font-black text-[10px] flex-1 uppercase">Déposer</button>
+                    <button onclick="alert('Retrait impossible. Solde 0€')" class="bg-white/10 text-white px-4 py-4 rounded-xl font-black text-[10px] flex-1 uppercase">Retrait</button>
                 </div>
             </div>
+            <h4 class="font-black text-lg mb-6 uppercase flex items-center gap-2"><span class="w-2 h-6 bg-yellow-500 rounded-full"></span> Opportunités</h4>
             <div id="projects-container"></div>
         </div>
         <div class="nav-bar">
@@ -99,45 +112,47 @@
     <div id="page-profile" class="step-page dashboard-bg !p-0">
         <div class="p-6 bg-white border-b flex items-center gap-4">
             <i onclick="goTo('page-dashboard')" class="fa-solid fa-arrow-left cursor-pointer"></i>
-            <h2 class="font-black uppercase text-sm">Mon Profil</h2>
+            <h2 class="font-black uppercase text-xs">Profil Investisseur</h2>
         </div>
         <div class="p-6">
-            <div class="bg-white p-5 rounded-2xl mb-4">
-                <div class="profile-row"><span>Nom complet</span><span id="p-name" class="font-bold">---</span></div>
-                <div class="profile-row"><span>Email</span><span id="p-email" class="font-bold text-[10px]">---</span></div>
-                <div class="profile-row"><span>Téléphone</span><span id="p-tel" class="font-bold">---</span></div>
-                <div class="profile-row"><span>Nationalité</span><span id="p-nat" class="font-bold">---</span></div>
+            <div class="bg-white p-6 rounded-3xl mb-4 shadow-sm">
+                <div class="flex justify-between py-3 border-b text-xs"><span>ID Client</span><span class="font-bold text-yellow-600">IA-202688</span></div>
+                <div class="flex justify-between py-3 border-b text-xs"><span>Nom</span><span id="p-name" class="font-bold">---</span></div>
+                <div class="flex justify-between py-3 border-b text-xs"><span>Email</span><span id="p-email" class="font-bold text-[10px]">---</span></div>
+                <div class="flex justify-between py-3 border-b text-xs"><span>Tel</span><span id="p-tel" class="font-bold">---</span></div>
+                <div class="flex justify-between py-3 text-xs"><span>Origine</span><span id="p-nat" class="font-bold">---</span></div>
             </div>
-            <div class="bg-white p-5 rounded-2xl">
-                <p class="text-[9px] font-bold text-gray-400 uppercase mb-3">Adresse de résidence</p>
-                <p id="p-addr" class="text-sm font-bold">---</p>
+            <div class="bg-white p-6 rounded-3xl shadow-sm">
+                <p class="text-[9px] font-bold text-gray-300 uppercase mb-3">Localisation de facturation</p>
+                <p id="p-addr" class="text-sm font-bold text-slate-700">---</p>
+                <p id="p-country" class="text-xs text-gray-400 mt-1">---</p>
             </div>
-            <button onclick="location.reload()" class="w-full mt-10 text-red-500 font-bold uppercase text-xs">Déconnexion</button>
+            <button onclick="location.reload()" class="w-full mt-10 text-red-500 font-bold uppercase text-[10px] tracking-widest">Se déconnecter</button>
         </div>
     </div>
 
     <div id="page-project-detail" class="step-page dashboard-bg !p-0">
-        <div class="relative h-60">
-            <img id="det-img" class="w-full h-full object-cover">
-            <div onclick="goTo('page-dashboard')" class="absolute top-5 left-5 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg"><i class="fa-solid fa-arrow-left"></i></div>
+        <div class="relative h-64">
+            <img id="det-img" src="" class="w-full h-full object-cover">
+            <div onclick="goTo('page-dashboard')" class="absolute top-5 left-5 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-xl"><i class="fa-solid fa-arrow-left"></i></div>
         </div>
-        <div class="p-8 bg-white rounded-t-[35px] -mt-10 relative min-h-screen">
-            <h2 id="det-title" class="text-2xl font-black mb-1">---</h2>
-            <p id="det-owner" class="text-yellow-600 text-[10px] font-black uppercase mb-6">---</p>
-            <div class="bg-slate-50 p-4 rounded-xl mb-6 text-xs">
-                <div class="flex justify-between mb-3"><span>Lieu</span><span id="det-loc" class="font-bold">---</span></div>
-                <div class="flex justify-between mb-3"><span>Surface</span><span id="det-size" class="font-bold">---</span></div>
-                <div class="flex justify-between"><span>Rendement</span><span id="det-perc" class="font-bold text-green-600">---</span></div>
+        <div class="p-8 bg-white rounded-t-[40px] -mt-10 relative z-10 min-h-screen">
+            <h2 id="det-title" class="text-2xl font-black text-slate-800 mb-1 tracking-tighter">---</h2>
+            <p id="det-owner" class="text-yellow-600 text-[9px] font-black uppercase mb-6 tracking-widest">---</p>
+            <div class="grid grid-cols-2 gap-3 mb-6">
+                <div class="bg-slate-50 p-4 rounded-2xl"><p class="text-[8px] text-gray-400 font-bold uppercase">Lieu</p><p id="det-loc" class="text-xs font-bold">---</p></div>
+                <div class="bg-slate-50 p-4 rounded-2xl"><p class="text-[8px] text-gray-400 font-bold uppercase">Rentabilité</p><p id="det-perc" class="text-xs font-bold text-green-600">---</p></div>
             </div>
-            <p id="det-desc" class="text-gray-500 text-sm leading-relaxed mb-8">---</p>
-            <button onclick="alert('Rechargez votre solde')" class="gold-btn w-full py-5 rounded-xl uppercase">Investir</button>
+            <h4 class="text-[10px] font-black uppercase text-gray-400 mb-2">Analyse du Projet</h4>
+            <p id="det-desc" class="text-gray-500 text-sm leading-relaxed mb-10">---</p>
+            <button onclick="alert('Veuillez créditer votre compte')" class="gold-btn w-full py-5 rounded-2xl uppercase shadow-lg">Investir sur ce projet</button>
         </div>
     </div>
 
-    <div id="modal-help" class="modal"><div class="bg-white p-10 rounded-[30px] text-center max-w-sm"><i class="fa-brands fa-whatsapp text-6xl text-green-500 mb-6"></i><h3 class="text-xl font-black mb-4">Aide</h3><p class="text-sm text-gray-400 mb-8">Contactez le service client 24h/24.</p><a href="https://wa.me/33756966407" class="block w-full py-4 bg-[#25D366] text-white rounded-xl font-black uppercase">WhatsApp</a><button onclick="hideModal('modal-help')" class="mt-4 text-gray-300 font-bold uppercase text-[10px]">Fermer</button></div></div>
-    <div id="modal-recharge" class="modal"><div class="bg-white p-8 rounded-[30px] max-w-sm"><h3 class="font-black mb-6">Dépôt</h3><div class="bg-gray-50 p-5 rounded-xl border"><p class="text-[9px] text-gray-400 font-bold">BÉNÉFICIAIRE</p><p id="iban-name" class="font-black mb-4 text-sm">---</p><p class="text-[9px] text-gray-400 font-bold">IBAN</p><p class="font-mono text-[11px] font-bold">FR76 3000 6000 0123 4567 8901 234</p></div><button onclick="hideModal('modal-recharge')" class="w-full mt-6 py-4 bg-black text-white rounded-xl uppercase text-xs">Fermer</button></div></div>
+    <div id="modal-help" class="modal"><div class="bg-white p-10 rounded-[35px] text-center max-w-sm"><i class="fa-brands fa-whatsapp text-6xl text-green-500 mb-6"></i><h3 class="text-xl font-black mb-4">Support 24/7</h3><p class="text-xs text-gray-400 mb-8">Un conseiller est prêt à vous aider sur WhatsApp.</p><a href="https://wa.me/33756966407" class="block w-full py-4 bg-[#25D366] text-white rounded-xl font-black uppercase shadow-lg">Ouvrir WhatsApp</a><button onclick="hideModal('modal-help')" class="mt-6 text-gray-300 font-bold uppercase text-[9px]">Fermer</button></div></div>
+    <div id="modal-recharge" class="modal"><div class="bg-white p-8 rounded-[35px] max-w-sm"><h3 class="font-black mb-6 text-xl">Effectuer un dépôt</h3><div class="bg-gray-100 p-6 rounded-2xl border"><p class="text-[9px] text-gray-400 font-bold">BÉNÉFICIAIRE</p><p id="iban-name" class="font-black mb-4 text-sm">---</p><p class="text-[9px] text-gray-400 font-bold">IBAN DE DÉPÔT</p><p class="font-mono text-xs font-bold tracking-tighter">FR76 3000 6000 0123 4567 8901 234</p></div><button onclick="hideModal('modal-recharge')" class="w-full mt-8 py-4 bg-black text-white rounded-xl uppercase text-xs font-bold">Terminé</button></div></div>
 
-    <div id="loader" class="loader-container"><div class="spinner"></div></div>
+    <div id="loader" class="loader-container"><div class="spinner"></div><p class="mt-6 text-yellow-500 font-bold uppercase text-[9px] tracking-widest">Sécurisation du profil...</p></div>
 </div>
 
 <script type="module">
@@ -154,27 +169,41 @@
     });
     const db = getFirestore(fb);
 
-    // GÉNÉRER LES PAYS
-    const afrique = ["Algérie 🇩🇿","Bénin 🇧🇯","Cameroun 🇨🇲","Côte d'Ivoire 🇨🇮","Gabon 🇬🇦","Guinée 🇬🇳","Mali 🇲🇱","Maroc 🇲🇦","Sénégal 🇸🇳","Togo 🇹🇬","Tunisie 🇹🇳","RD Congo 🇨🇩"];
-    const europe = ["France 🇫🇷","Belgique 🇧🇪","Suisse 🇨🇭","Luxembourg 🇱🇺","Espagne 🇪🇸","Portugal 🇵🇹","Italie 🇮🇹","Allemagne 🇩🇪"];
-    const paysHtml = `<option value="">Sélectionner</option><optgroup label="AFRIQUE">${afrique.map(p => `<option value="${p}">${p}</option>`).join('')}</optgroup><optgroup label="EUROPE">${europe.map(p => `<option value="${p}">${p}</option>`).join('')}</optgroup>`;
+    // LISTE DES PAYS COMPLÈTE
+    const pays = [
+        "Afrique du Sud 🇿🇦", "Algérie 🇩🇿", "Angola 🇦🇴", "Bénin 🇧🇯", "Burkina Faso 🇧🇫", "Burundi 🇧🇮", "Cameroun 🇨🇲", "Cap-Vert 🇨🇻", "Congo 🇨🇬", "Côte d'Ivoire 🇨🇮", "Djibouti 🇩🇯", "Égypte 🇪🇬", "Éthiopie 🇪🇹", "Gabon 🇬🇦", "Ghana 🇬🇭", "Guinée 🇬🇳", "Kenya 🇰🇪", "Madagascar 🇲🇬", "Mali 🇲🇱", "Maroc 🇲🇦", "Maurice 🇲🇺", "Mauritanie 🇲🇷", "Niger 🇳🇪", "Nigéria 🇳🇬", "Rwanda 🇷🇼", "Sénégal 🇸🇳", "Tchad 🇹🇩", "Togo 🇹🇬", "Tunisie 🇹🇳",
+        "Allemagne 🇩🇪", "Autriche 🇦🇹", "Belgique 🇧🇪", "Danemark 🇩🇰", "Espagne 🇪🇸", "Estonie 🇪🇪", "Finlande 🇫🇮", "France 🇫🇷", "Grèce 🇬🇷", "Hongrie 🇭🇺", "Irlande 🇮🇪", "Italie 🇮🇹", "Luxembourg 🇱🇺", "Norvège 🇳🇴", "Pays-Bas 🇳🇱", "Pologne 🇵🇱", "Portugal 🇵🇹", "Royaume-Uni 🇬🇧", "Suède 🇸🇪", "Suisse 🇨🇭"
+    ];
+    const paysHtml = `<option value="">Sélectionner un pays</option>` + pays.map(p => `<option value="${p}">${p}</option>`).join('');
     document.querySelectorAll('.country-list').forEach(el => el.innerHTML = paysHtml);
 
-    // GÉNÉRER 35 PROJETS
+    // GÉNÉRATION DES 35 PROJETS (AFRIQUE + EUROPE)
     const PROJETS = [];
-    const types = ["IMMOBILIER", "LOGISTIQUE", "COMMERCE", "ÉNERGIE"];
-    const imgs = ["architecture", "business", "cargo", "solar", "city", "industry"];
+    const keywordsAfrique = ["Gold Mine", "African Mining", "Simandou Guinea", "Burkina Gold", "Mali Mining", "African Port", "Cacao Africa"];
+    const keywordsEurope = ["Luxury Building", "Solar Farm", "Wind Turbine", "Modern Office", "Digital Tech", "Cargo Ship"];
+
     for(let i=1; i<=35; i++) {
-        const type = types[i % 4];
+        let title, loc, owner, desc, imgKey;
+        if(i <= 20) { // PROJETS AFRIQUE
+            const afNames = ["Simandou (Guinée)", "Kibali (RDC)", "Essakane (Burkina)", "Yanfolila (Mali)", "Port Abidjan", "Mine Sadiola"];
+            loc = afNames[i % afNames.length];
+            title = "Exploitation " + (i%2==0 ? "Minière" : "Agricole") + " #" + i;
+            owner = "Africa Global Resources";
+            desc = "Projet d'extraction et d'exportation de matières premières à haut rendement stratégique.";
+            imgKey = "mining,gold";
+        } else { // PROJETS EUROPE
+            const euNames = ["Paris 8e", "Berlin Mitte", "Bruxelles Centre", "Luxembourg Ville", "Eoliennes Mer du Nord"];
+            loc = euNames[i % euNames.length];
+            title = "Développement " + (i%2==0 ? "Immobilier" : "Énergétique") + " #" + i;
+            owner = "Euro Capital Invest";
+            desc = "Placement sécurisé dans des actifs tangibles en zone européenne à forte valorisation.";
+            imgKey = "architecture,office,solar";
+        }
         PROJETS.push({
-            title: `Projet ${type} International #${100+i}`,
-            type: type,
-            owner: "Global Capital Invest",
-            loc: "Zone Industrielle, Europe/Afrique",
-            size: "15 000 m²",
-            perc: 10 + (i % 20),
-            desc: "Un investissement sécurisé à haut potentiel de croissance.",
-            img: `https://images.unsplash.com/photo-${1500000000000 + (i*1000000)}?q=80&w=600&auto=format&fit=crop&sig=${i}`
+            title, loc, owner, desc,
+            perc: 7 + (i % 15),
+            size: (1000 + (i*500)) + " m² / Hectares",
+            img: `https://source.unsplash.com/600x400/?${imgKey},${i}` // IMAGE UNIQUE ET FIABLE
         });
     }
 
@@ -187,7 +216,7 @@
     window.hideModal = (id) => document.getElementById(id).style.display = 'none';
 
     window.createAccountProcess = async () => {
-        if(!document.getElementById('accept-terms').checked) return alert("Cochez la case.");
+        if(!document.getElementById('accept-terms').checked) return alert("Veuillez accepter la politique.");
         document.getElementById('loader').style.display = 'flex';
         const user = {
             tel: document.getElementById('reg-phone').value, email: document.getElementById('reg-email').value,
@@ -212,7 +241,7 @@
             updateUI(qs.docs[0].data());
             goTo('page-dashboard');
             renderProjects();
-        } else { alert("Erreur."); }
+        } else { alert("Accès incorrect."); }
     };
 
     function updateUI(user) {
@@ -222,6 +251,7 @@
         document.getElementById('p-tel').innerText = user.tel;
         document.getElementById('p-nat').innerText = user.nat;
         document.getElementById('p-addr').innerText = user.addr;
+        document.getElementById('p-country').innerText = user.pays;
         document.getElementById('iban-name').innerText = `${user.sexe} ${user.nom}`;
     }
 
@@ -229,10 +259,9 @@
         const p = PROJETS[index];
         document.getElementById('det-img').src = p.img;
         document.getElementById('det-title').innerText = p.title;
-        document.getElementById('det-owner').innerText = `PROPRIÉTAIRE : ${p.owner}`;
+        document.getElementById('det-owner').innerText = `GESTION : ${p.owner}`;
         document.getElementById('det-loc').innerText = p.loc;
-        document.getElementById('det-size').innerText = p.size;
-        document.getElementById('det-perc').innerText = `+${p.perc}% / an`;
+        document.getElementById('det-perc').innerText = `+${p.perc}% Estimé`;
         document.getElementById('det-desc').innerText = p.desc;
         goTo('page-project-detail');
     };
@@ -241,11 +270,11 @@
         const container = document.getElementById('projects-container');
         container.innerHTML = PROJETS.map((p, i) => `
             <div class="card-project">
-                <img src="${p.img}" class="w-full h-40 object-cover">
+                <img src="${p.img}" class="w-full h-44 object-cover">
                 <div class="p-5">
-                    <span class="text-[8px] font-black bg-yellow-100 text-yellow-600 px-2 py-1 rounded mb-2 inline-block uppercase">${p.type}</span>
-                    <h5 class="font-black text-sm mb-4 text-slate-800">${p.title}</h5>
-                    <button onclick="openDetails(${i})" class="w-full border py-3 rounded-xl font-black text-[9px] uppercase">Voir plus</button>
+                    <span class="text-[8px] font-black bg-yellow-50 text-yellow-600 px-2 py-1 rounded mb-2 inline-block uppercase">Rendement ${p.perc}%</span>
+                    <h5 class="font-black text-[15px] mb-4 text-slate-800">${p.title}</h5>
+                    <button onclick="openDetails(${i})" class="w-full bg-slate-50 text-slate-800 py-3 rounded-xl font-black text-[9px] uppercase border">Détails du projet</button>
                 </div>
             </div>`).join('');
     }

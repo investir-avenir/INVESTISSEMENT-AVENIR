@@ -106,7 +106,7 @@
 
     const countries = [
         {name: "Albanie", flag: "🇦🇱"}, {name: "Allemagne", flag: "🇩🇪"}, {name: "Andorre", flag: "🇦🇩"},
-        {name: "Autriche", flag: "AT"}, {name: "Belgique", flag: "🇧🇪"}, {name: "Biélorussie", flag: "🇧🇾"},
+        {name: "Autriche", flag: "🇦🇹"}, {name: "Belgique", flag: "🇧🇪"}, {name: "Biélorussie", flag: "🇧🇾"},
         {name: "Bosnie-Herzégovine", flag: "🇧🇦"}, {name: "Bulgarie", flag: "🇧🇬"}, {name: "Chypre", flag: "🇨🇾"},
         {name: "Croatie", flag: "🇭🇷"}, {name: "Danemark", flag: "🇩🇰"}, {name: "Espagne", flag: "🇪🇸"},
         {name: "Estonie", flag: "🇪🇪"}, {name: "Finlande", flag: "🇫🇮"}, {name: "France", flag: "🇫🇷"},
@@ -144,13 +144,28 @@
 
     window.filterCountries = () => renderCountries(document.getElementById('country-search').value);
 
+    // CORRECTIF RECAPTCHA ICI
     window.sendSMS = async () => {
         const phone = document.getElementById('reg-phone').value;
-        const verifier = new RecaptchaVerifier(auth, 'recaptcha-container', { size: 'invisible' });
+        const btn = document.getElementById('btn-sms');
+        
+        if(!phone) return alert("Entrez votre numéro");
+
+        if (!window.recaptchaVerifier) {
+            window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 
+                size: 'invisible' 
+            });
+        }
+        
+        btn.innerText = "ENVOI EN COURS...";
         try {
-            confirmationResult = await signInWithPhoneNumber(auth, phone, verifier);
+            confirmationResult = await signInWithPhoneNumber(auth, phone, window.recaptchaVerifier);
             goTo('page-verify');
-        } catch (e) { alert(e.message); }
+        } catch (e) { 
+            console.error(e);
+            alert("Erreur : " + e.message);
+            btn.innerText = "RECEVOIR LE CODE"; 
+        }
     };
 
     window.verifySMS = async () => {

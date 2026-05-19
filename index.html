@@ -2,273 +2,221 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Investissement & Avenir</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { background-color: #000; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; overflow-x: hidden; }
-        .gold-btn { background: linear-gradient(135deg, #d4af37 0%, #f1d592 100%); color: #000; font-weight: 800; transition: all 0.3s; }
-        .gold-btn:active { transform: scale(0.98); opacity: 0.8; }
-        .step-page { display: none; min-height: 100vh; flex-direction: column; padding: 25px; animation: slideIn 0.3s ease-out; }
+        /* Verrouillage de l'écran pour éviter le défilement sur l'inscription */
+        html, body { height: 100%; margin: 0; overflow: hidden; background-color: #000; font-family: sans-serif; }
+        
+        .step-page { 
+            display: none; 
+            height: 100vh; 
+            width: 100vw; 
+            flex-direction: column; 
+            padding: 30px; 
+            justify-content: space-between;
+            box-sizing: border-box;
+        }
         .active { display: flex; }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-        
-        input, select { background: #111!important; border: 1px solid #333!important; color: white!important; border-radius: 15px!important; padding: 15px!important; width: 100%; margin-bottom: 12px; outline: none; font-size: 14px; }
-        .dashboard-bg { background-color: #f8fafc; color: #333; }
-        .card-project { background: white; border-radius: 20px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .nav-bar { background: white; border-top: 1px solid #eee; position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; padding: 15px 0; z-index: 100; }
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
-        
-        /* LOADER DE 15 SECONDES */
-        .loader-container { display: none; position: fixed; inset: 0; background: #000; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; }
-        .spinner { width: 60px; height: 60px; border: 3px solid #111; border-top: 3px solid #d4af37; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .progress-bar { width: 200px; height: 2px; background: #222; margin-top: 20px; border-radius: 10px; overflow: hidden; }
-        .progress-fill { width: 0%; height: 100%; background: #d4af37; transition: width 15s linear; }
+
+        /* Style des entrées */
+        input, select { 
+            background: #1a1a1a!important; 
+            border: 1px solid #333!important; 
+            color: white!important; 
+            border-radius: 12px!important; 
+            padding: 16px!important; 
+            width: 100%; 
+            outline: none;
+            font-size: 16px;
+        }
+
+        .gold-btn { 
+            background: linear-gradient(135deg, #d4af37 0%, #f1d592 100%); 
+            color: #000; 
+            font-weight: 800; 
+            padding: 18px; 
+            border-radius: 15px; 
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        /* Dashboard autorise le scroll contrairement à l'inscription */
+        #page-dashboard { overflow-y: auto; display: none; height: 100vh; background: #f9fafb; color: #111; padding: 0; }
+        #page-dashboard.active { display: block; }
+
+        .project-card { background: white; border-radius: 20px; margin: 15px; overflow: hidden; shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #eee; }
+        .project-img { width: 100%; height: 180px; object-fit: cover; background: #eee; }
+
+        .loader-screen {
+            display: none; position: fixed; inset: 0; background: #000; z-index: 10000;
+            flex-direction: column; align-items: center; justify-content: center;
+        }
+        .spinner { width: 40px; height: 40px; border: 3px solid #222; border-top: 3px solid #d4af37; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
 <div id="app">
-    <div id="page-welcome" class="step-page active items-center justify-center text-center">
-        <h1 class="text-4xl font-black mb-16 text-yellow-500 italic uppercase tracking-tighter">Investissement <br>& Avenir</h1>
-        <button onclick="goTo('page-step1')" class="gold-btn w-full py-5 rounded-2xl mb-4 uppercase text-sm">Créer un compte</button>
-        <button onclick="goTo('page-login')" class="w-full py-5 rounded-2xl border border-white/20 uppercase font-bold text-[10px]">Accès Investisseur</button>
-    </div>
-
-    <div id="page-login" class="step-page">
-        <h2 class="text-2xl font-black mb-8 text-yellow-500 uppercase">Connexion</h2>
-        <input type="email" id="login-email" placeholder="Email">
-        <input type="password" id="login-pass" placeholder="Mot de passe">
-        <button onclick="loginUser()" class="gold-btn w-full py-5 rounded-2xl mt-6 uppercase">Se connecter</button>
-    </div>
-
-    <div id="page-step1" class="step-page"><h2 class="text-xl font-black mb-8 text-yellow-500 uppercase">Téléphone</h2><input type="tel" id="reg-phone" placeholder="+33..."><button onclick="goTo('page-step2')" class="gold-btn w-full py-5 rounded-2xl mt-auto uppercase">Suivant</button></div>
-    <div id="page-step2" class="step-page"><h2 class="text-xl font-black mb-8 text-yellow-500 uppercase">Sécurité</h2><input type="email" id="reg-email" placeholder="Email"><input type="password" id="reg-pass" placeholder="Mot de passe"><button onclick="goTo('page-step3')" class="gold-btn w-full py-5 rounded-2xl mt-auto uppercase">Suivant</button></div>
-    <div id="page-step3" class="step-page">
-        <h2 class="text-xl font-black mb-6 text-yellow-500 uppercase">Identité</h2>
-        <select id="reg-sexe"><option value="M.">Monsieur</option><option value="Mme">Madame</option></select>
-        <input type="text" id="reg-nom" placeholder="Nom">
-        <input type="text" id="reg-prenom" placeholder="Prénom">
-        <input type="text" id="reg-dob" placeholder="Date de naissance">
-        <select id="reg-nat" class="country-list"></select>
-        <button onclick="goTo('page-step4')" class="gold-btn w-full py-5 rounded-2xl mt-auto uppercase">Suivant</button>
-    </div>
-    <div id="page-step4" class="step-page">
-        <h2 class="text-xl font-black mb-6 text-yellow-500 uppercase">Résidence</h2>
-        <select id="reg-pays" class="country-list"></select>
-        <input type="text" id="reg-num-rue" placeholder="Numéro">
-        <input type="text" id="reg-nom-rue" placeholder="Rue">
-        <input type="text" id="reg-cp" placeholder="Code Postal">
-        <input type="text" id="reg-ville" placeholder="Ville">
-        <button onclick="goTo('page-step5')" class="gold-btn w-full py-5 rounded-2xl mt-auto uppercase">Suivant</button>
-    </div>
-
-    <div id="page-step5" class="step-page">
-        <h2 class="text-xl font-black mb-6 text-yellow-500 uppercase">Validation</h2>
-        <div class="bg-[#111] p-5 rounded-2xl mb-8 text-[10px] text-gray-500 h-64 overflow-y-auto leading-relaxed border border-white/5">
-            <p class="font-bold text-white mb-2 uppercase">Conditions Générales d'Investissement</p>
-            En créant un compte sur la plateforme Investissement & Avenir, vous acceptez que vos données soient traitées conformément aux normes bancaires européennes. <br><br>
-            - La création de votre compte nécessite une vérification d'identité (KYC).<br>
-            - Votre portefeuille sera activé après validation par notre service financier.<br>
-            - Vous reconnaissez être responsable de vos décisions d'investissement.<br><br>
-            Nous garantissons la confidentialité totale de vos transactions et de vos informations personnelles.
-        </div>
-        <div class="flex items-center gap-4 mb-8">
-            <input type="checkbox" id="accept-terms" class="w-6 h-6">
-            <label class="text-[10px] text-gray-400 uppercase font-bold">Je confirme mon inscription</label>
-        </div>
-        <button onclick="createAccountProcess()" class="gold-btn w-full py-5 rounded-2xl uppercase">Confirmer et Créer</button>
-    </div>
-
-    <div id="loader" class="loader-container">
+    <div id="loader" class="loader-screen">
         <div class="spinner"></div>
-        <p id="loader-text" class="text-yellow-500 font-bold uppercase text-[10px] tracking-widest">Initialisation du système...</p>
-        <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
+        <p id="loader-text" class="text-yellow-500 font-bold text-[10px] mt-6 tracking-[0.3em] uppercase text-center px-10">Vérification de sécurité...</p>
     </div>
 
-    <div id="page-dashboard" class="step-page dashboard-bg !p-0 !pb-24">
-        <div class="p-6 bg-white flex justify-between items-center border-b">
-            <div><p class="text-[9px] text-gray-400 font-bold uppercase">Investissement & Avenir</p><h3 id="user-display" class="font-black text-lg">---</h3></div>
-            <div onclick="goTo('page-profile')" class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center text-yellow-600"><i class="fa-solid fa-user"></i></div>
+    <div id="page-welcome" class="step-page active">
+        <div class="mt-20 text-center">
+            <h1 class="text-4xl font-black text-white italic tracking-tighter">INVESTISSEMENT <br><span class="text-yellow-500">& AVENIR</span></h1>
+            <p class="text-gray-500 text-xs mt-4 uppercase tracking-widest">Gestion de patrimoine Europe</p>
         </div>
-        <div class="p-5">
-            <div class="bg-[#0f172a] p-8 rounded-[35px] text-white shadow-2xl mb-8">
-                <p class="text-[9px] uppercase font-bold text-gray-500">Portefeuille</p><h2 class="text-4xl font-black mt-1">0,00 €</h2>
-                <div class="mt-8 flex gap-3">
-                    <button onclick="showModal('modal-recharge')" class="bg-white text-black py-4 rounded-xl font-black text-[10px] flex-1 uppercase">Déposer</button>
-                    <button onclick="alert('Compte vide')" class="bg-white/10 text-white py-4 rounded-xl font-black text-[10px] flex-1 uppercase">Retrait</button>
+        <div class="mb-10 space-y-4">
+            <button onclick="goTo('page-step1')" class="gold-btn w-full">Devenir Investisseur</button>
+            <button class="w-full text-white/40 text-[10px] font-bold uppercase py-2">Accès Client</button>
+        </div>
+    </div>
+
+    <div id="page-step1" class="step-page">
+        <div>
+            <h2 class="text-xl font-bold text-yellow-500 uppercase mt-10">Votre Mobile</h2>
+            <p class="text-gray-500 text-xs mt-2">Pour la double authentification.</p>
+            <div class="mt-10"><input type="tel" placeholder="+33 6 00 00 00 00"></div>
+        </div>
+        <button onclick="goTo('page-step2')" class="gold-btn w-full mb-10">Continuer</button>
+    </div>
+
+    <div id="page-step2" class="step-page">
+        <div>
+            <h2 class="text-xl font-bold text-yellow-500 uppercase mt-10">Identité</h2>
+            <div class="mt-10 space-y-4">
+                <input type="text" placeholder="Nom complet">
+                <input type="text" placeholder="Date de naissance">
+                <select>
+                    <option>France 🇫🇷</option>
+                    <option>Belgique 🇧🇪</option>
+                    <option>Luxembourg 🇱🇺</option>
+                    <option>Suisse 🇨🇭</option>
+                </select>
+            </div>
+        </div>
+        <button onclick="goTo('page-step3')" class="gold-btn w-full mb-10">Suivant</button>
+    </div>
+
+    <div id="page-step3" class="step-page">
+        <div>
+            <h2 class="text-xl font-bold text-yellow-500 uppercase mt-10">Confidentialité</h2>
+            <div class="mt-8 bg-zinc-900 p-5 rounded-xl text-[11px] text-gray-400 leading-relaxed border border-white/5 h-64 overflow-y-auto">
+                <p class="font-bold text-white mb-2 uppercase">Protection des données</p>
+                En créant un compte, vous acceptez que vos informations soient stockées de manière chiffrée. <br><br>
+                Nous utilisons le protocole SSL 256 bits pour sécuriser chaque transaction. Votre patrimoine est protégé par les garanties européennes de dépôt.
+            </div>
+        </div>
+        <button onclick="startCreation()" class="gold-btn w-full mb-10">Confirmer et Créer</button>
+    </div>
+
+    <div id="page-dashboard" class="step-page">
+        <div class="p-6 bg-white border-b sticky top-0 z-50 flex justify-between items-center">
+            <h3 class="font-black italic text-lg tracking-tighter">I&A <span class="text-yellow-600">EUROPE</span></h3>
+            <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center"><i class="fa-solid fa-user text-xs"></i></div>
+        </div>
+
+        <div class="p-4">
+            <div class="bg-slate-900 rounded-[30px] p-8 text-white shadow-xl mb-8">
+                <p class="text-[9px] uppercase text-gray-500 font-bold tracking-[2px]">Portefeuille Actif</p>
+                <h2 class="text-4xl font-black mt-2">0,00 €</h2>
+                <div class="flex gap-3 mt-6">
+                    <button class="bg-white text-black text-[10px] font-black py-3 px-6 rounded-lg uppercase flex-1">Déposer</button>
+                    <button class="bg-white/10 text-white text-[10px] font-black py-3 px-6 rounded-lg uppercase flex-1">Retrait</button>
                 </div>
             </div>
-            <div id="projects-container"></div>
+
+            <h4 class="font-black text-xs uppercase tracking-widest px-2 mb-4">Opportunités Europe</h4>
+            <div id="project-list"></div>
         </div>
-        <div class="nav-bar">
-            <div onclick="goTo('page-dashboard')" class="text-yellow-600 text-center"><i class="fa-solid fa-house"></i><br><span class="text-[9px] font-bold">ACCUEIL</span></div>
-            <div onclick="showModal('modal-help')" class="text-gray-400 text-center"><i class="fa-solid fa-headset"></i><br><span class="text-[9px] font-bold">AIDE</span></div>
+        
+        <div class="h-20"></div>
+        <div class="fixed bottom-0 w-full bg-white border-t flex justify-around p-4 z-50">
+            <i class="fa-solid fa-house text-yellow-600"></i>
+            <i class="fa-solid fa-chart-pie text-gray-300"></i>
+            <i class="fa-solid fa-headset text-gray-300"></i>
         </div>
     </div>
-
-    <div id="page-profile" class="step-page dashboard-bg !p-0">
-        <div class="p-6 bg-white border-b flex items-center gap-4"><i onclick="goTo('page-dashboard')" class="fa-solid fa-arrow-left"></i><h2 class="font-black uppercase text-xs">Mon Profil</h2></div>
-        <div class="p-6">
-            <div class="bg-white p-6 rounded-3xl mb-4">
-                <div class="flex justify-between py-3 border-b text-xs"><span>Nom</span><span id="p-name" class="font-bold">---</span></div>
-                <div class="flex justify-between py-3 border-b text-xs"><span>Email</span><span id="p-email" class="font-bold">---</span></div>
-                <div class="flex justify-between py-3 border-b text-xs"><span>Nationalité</span><span id="p-nat" class="font-bold">---</span></div>
-                <div class="flex justify-between py-3 text-xs"><span>Résidence</span><span id="p-country" class="font-bold">---</span></div>
-            </div>
-            <button onclick="location.reload()" class="w-full mt-10 text-red-500 font-bold uppercase text-[9px]">Déconnexion</button>
-        </div>
-    </div>
-
-    <div id="page-project-detail" class="step-page dashboard-bg !p-0">
-        <img id="det-img" src="" class="w-full h-64 object-cover">
-        <div class="p-8 bg-white rounded-t-[40px] -mt-10 relative z-10 min-h-screen">
-            <h2 id="det-title" class="text-2xl font-black mb-1">---</h2>
-            <p id="det-owner" class="text-yellow-600 text-[9px] font-black uppercase mb-6 italic">---</p>
-            <p id="det-desc" class="text-gray-500 text-sm leading-relaxed mb-10">---</p>
-            <button onclick="alert('Rechargez votre compte')" class="gold-btn w-full py-5 rounded-2xl uppercase">Investir maintenant</button>
-        </div>
-    </div>
-
-    <div id="modal-recharge" class="modal"><div class="bg-white p-8 rounded-[35px] max-w-sm"><h3 class="font-black mb-6 text-xl">Dépôt Bancaire</h3><div class="bg-gray-100 p-6 rounded-2xl border"><p class="text-[9px] text-gray-400 font-bold">BÉNÉFICIAIRE</p><p id="iban-name" class="font-black mb-4 text-sm">---</p><p class="text-[9px] text-gray-400 font-bold">IBAN DE DÉPÔT</p><p class="font-mono text-xs font-bold">FR76 3000 6000 0123 4567 8901 234</p></div><button onclick="hideModal('modal-recharge')" class="w-full mt-8 py-4 bg-black text-white rounded-xl uppercase text-xs">Fermer</button></div></div>
-    <div id="modal-help" class="modal"><div class="bg-white p-10 rounded-[35px] text-center max-w-sm"><i class="fa-brands fa-whatsapp text-6xl text-green-500 mb-6"></i><h3 class="text-xl font-black mb-4">Support</h3><a href="https://wa.me/33756966407" class="block w-full py-4 bg-[#25D366] text-white rounded-xl font-black uppercase">WhatsApp</a><button onclick="hideModal('modal-help')" class="mt-4 text-gray-300 uppercase text-[9px]">Fermer</button></div></div>
 </div>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, doc, setDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+<script>
+    // Liste de 35 projets 100% Europe avec images garanties
+    const PROJETS_EUROPE = [
+        { t: "Résidence Élysée", l: "Paris, France", img: "https://images.unsplash.com/photo-1502602898657-3e917247a183?w=500&q=80" },
+        { t: "Complexe Solaire", l: "Séville, Espagne", img: "https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=500&q=80" },
+        { t: "Bureaux Tech", l: "Berlin, Allemagne", img: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=500&q=80" },
+        { t: "Port de Rotterdam", l: "Pays-Bas", img: "https://images.unsplash.com/photo-1524522173746-f628baad3f44?w=500&q=80" },
+        { t: "Eco-Quartier", l: "Stockholm, Suède", img: "https://images.unsplash.com/photo-1518005020480-1cd34333799c?w=500&q=80" },
+        { t: "Centre Logistique", l: "Lyon, France", img: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=500&q=80" },
+        { t: "Tour Financière", l: "Londres, UK", img: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=500&q=80" },
+        { t: "Data Center", l: "Dublin, Irlande", img: "https://images.unsplash.com/photo-1558494949-ef010cbdcc51?w=500&q=80" },
+        { t: "Vignoble Bio", l: "Bordeaux, France", img: "https://images.unsplash.com/photo-1504275107627-0c2ba7a43dba?w=500&q=80" },
+        { t: "Parc Éolien", l: "Écosse", img: "https://images.unsplash.com/photo-1466611653911-95282ee3956f?w=500&q=80" },
+        { t: "Luxe Rivieira", l: "Monaco", img: "https://images.unsplash.com/photo-1520607162513-90ad0c860597?w=500&q=80" }
+        // ... (Le script va dupliquer et varier pour atteindre 35)
+    ];
 
-    const fb = initializeApp({
-        apiKey: "AIzaSyD1Yhvo8ooS9nTb_RRP7Pswjqovj2T6ZOU",
-        authDomain: "invest-avenir.firebaseapp.com",
-        projectId: "invest-avenir",
-        storageBucket: "invest-avenir.firebasestorage.app",
-        messagingSenderId: "109431023120",
-        appId: "1:109431023120:web:469c6c2cb0d027a3180c95"
-    });
-    const db = getFirestore(fb);
-
-    // PAYS EUROPE & AFRIQUE
-    const pays = ["Afrique du Sud 🇿🇦", "Algérie 🇩🇿", "Bénin 🇧🇯", "Burkina Faso 🇧🇫", "Cameroun 🇨🇲", "Côte d'Ivoire 🇨🇮", "Gabon 🇬🇦", "Guinée 🇬🇳", "Mali 🇲🇱", "Maroc 🇲🇦", "Sénégal 🇸🇳", "Togo 🇹🇬", "Tunisie 🇹🇳", "Allemagne 🇩🇪", "Belgique 🇧🇪", "Espagne 🇪🇸", "France 🇫🇷", "Italie 🇮🇹", "Luxembourg 🇱🇺", "Suisse 🇨🇭"];
-    const paysHtml = `<option value="">Choisir...</option>` + pays.map(p => `<option value="${p}">${p}</option>`).join('');
-    document.querySelectorAll('.country-list').forEach(el => el.innerHTML = paysHtml);
-
-    // 35 PROJETS AVEC IMAGES DYNAMIQUES
-    const PROJETS = [];
-    for(let i=1; i<=35; i++) {
-        let title, loc, imgKey;
-        if(i <= 18) {
-            title = (i%2==0 ? "Mine d'Or " : "Extension Portuaire ") + i;
-            loc = "Afrique (Guinée/Mali/Burkina)";
-            imgKey = "gold,mine,industrial";
-        } else {
-            title = (i%2==0 ? "Immobilier Luxe " : "Parc Solaire ") + i;
-            loc = "Europe (Paris/Berlin/Bruxelles)";
-            imgKey = "luxury,architecture,solar";
-        }
-        PROJETS.push({
-            title, loc,
-            owner: "Global Assets Ltd",
-            desc: "Ce projet offre une opportunité de croissance exceptionnelle dans un secteur stratégique.",
-            img: `https://source.unsplash.com/600x400/?${imgKey},${i}`
-        });
-    }
-
-    window.goTo = (id) => {
+    function goTo(id) {
         document.querySelectorAll('.step-page').forEach(p => p.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         window.scrollTo(0,0);
-    };
+    }
 
-    window.showModal = (id) => document.getElementById(id).style.display = 'flex';
-    window.hideModal = (id) => document.getElementById(id).style.display = 'none';
-
-    // PROCESSUS DE CRÉATION DE 15 SECONDES
-    window.createAccountProcess = async () => {
-        if(!document.getElementById('accept-terms').checked) return alert("Validez les conditions.");
-        
+    function startCreation() {
         const loader = document.getElementById('loader');
-        const loaderText = document.getElementById('loader-text');
-        const progressFill = document.getElementById('progress-fill');
-        
+        const text = document.getElementById('loader-text');
         loader.style.display = 'flex';
-        progressFill.style.width = '100%';
 
-        const messages = [
-            "Vérification des documents...",
-            "Analyse de conformité bancaire...",
-            "Génération de votre IBAN européen...",
-            "Sécurisation du portefeuille...",
-            "Ouverture de votre accès investisseur..."
+        const msgs = [
+            "Analyse des données...",
+            "Vérification AML/KYC...",
+            "Ouverture du compte IBAN...",
+            "Sécurisation du Wallet...",
+            "Prêt !"
         ];
 
-        let msgIndex = 0;
-        const msgInterval = setInterval(() => {
-            loaderText.innerText = messages[msgIndex];
-            msgIndex = (msgIndex + 1) % messages.length;
+        let i = 0;
+        const interval = setInterval(() => {
+            if(i < msgs.length) text.innerText = msgs[i++];
         }, 3000);
 
-        const userData = {
-            tel: document.getElementById('reg-phone').value, email: document.getElementById('reg-email').value,
-            pass: document.getElementById('reg-pass').value, nom: document.getElementById('reg-nom').value,
-            sexe: document.getElementById('reg-sexe').value, nat: document.getElementById('reg-nat').value,
-            pays: document.getElementById('reg-pays').value, addr: document.getElementById('reg-nom-rue').value
-        };
-
-        await setDoc(doc(db, "users", "u_" + Date.now()), userData);
-        
         setTimeout(() => {
-            clearInterval(msgInterval);
-            updateUI(userData);
+            clearInterval(interval);
             loader.style.display = 'none';
-            goTo('page-dashboard');
             renderProjects();
-        }, 15000); // 15 secondes exactement
-    };
-
-    window.loginUser = async () => {
-        const email = document.getElementById('login-email').value;
-        const pass = document.getElementById('login-pass').value;
-        const q = query(collection(db, "users"), where("email", "==", email), where("pass", "==", pass));
-        const qs = await getDocs(q);
-        if (!qs.empty) {
-            updateUI(qs.docs[0].data());
             goTo('page-dashboard');
-            renderProjects();
-        } else { alert("Identifiants incorrects"); }
-    };
-
-    function updateUI(u) {
-        document.getElementById('user-display').innerText = `${u.sexe} ${u.nom}`;
-        document.getElementById('p-name').innerText = u.nom;
-        document.getElementById('p-email').innerText = u.email;
-        document.getElementById('p-nat').innerText = u.nat;
-        document.getElementById('p-country').innerText = u.pays;
-        document.getElementById('iban-name').innerText = `${u.sexe} ${u.nom}`;
+        }, 15000);
     }
-
-    window.openDetails = (i) => {
-        const p = PROJETS[i];
-        document.getElementById('det-img').src = p.img;
-        document.getElementById('det-title').innerText = p.title;
-        document.getElementById('det-owner').innerText = `Géré par: ${p.owner}`;
-        document.getElementById('det-desc').innerText = p.desc;
-        goTo('page-project-detail');
-    };
 
     function renderProjects() {
-        document.getElementById('projects-container').innerHTML = PROJETS.map((p, i) => `
-            <div class="card-project">
-                <img src="${p.img}" class="w-full h-44 object-cover">
-                <div class="p-5">
-                    <h5 class="font-black text-sm mb-4">${p.title}</h5>
-                    <p class="text-[9px] text-gray-400 mb-4 uppercase">${p.loc}</p>
-                    <button onclick="openDetails(${i})" class="w-full border py-3 rounded-xl font-bold text-[9px] uppercase">Détails</button>
+        const container = document.getElementById('project-list');
+        let html = '';
+        
+        // On génère 35 projets
+        for(let i=0; i<35; i++) {
+            const p = PROJETS_EUROPE[i % PROJETS_EUROPE.length];
+            html += `
+                <div class="project-card">
+                    <img src="${p.img}&sig=${i}" class="project-img" alt="Projet">
+                    <div class="p-4">
+                        <div class="flex justify-between items-center">
+                            <h5 class="font-black text-sm">${p.t} #${i+1}</h5>
+                            <span class="bg-green-100 text-green-700 text-[9px] font-bold px-2 py-1 rounded">+8.4%</span>
+                        </div>
+                        <p class="text-[10px] text-gray-400 mt-1 uppercase font-bold">${p.l}</p>
+                    </div>
                 </div>
-            </div>`).join('');
+            `;
+        }
+        container.innerHTML = html;
     }
 </script>
+
 </body>
 </html>
